@@ -1,0 +1,14 @@
+.gitignore
+  h_3dcfd613e97439 1-186
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "8b31506360a43a9a742fb27b2dafc1408240c980",
+  "prompts": {},
+  "humans": {
+    "h_3dcfd613e97439": {
+      "author": "Mint <audwl03071@gmail.com>"
+    }
+  }
+}
