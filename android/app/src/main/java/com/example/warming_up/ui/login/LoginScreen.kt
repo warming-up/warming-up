@@ -26,8 +26,10 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -53,11 +55,14 @@ import com.example.warming_up.ui.theme.WarmingupTheme
 @Composable
 fun LoginScreen(
     modifier: Modifier = Modifier,
+    viewModel: LoginViewModel? = null,
     onSignInClick: () -> Unit = {},
     onSignUpClick: () -> Unit = {},
 ) {
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
+    val uiState by viewModel?.uiState?.collectAsState()
+        ?: remember { mutableStateOf(LoginUiState()) }
 
     Box(
         modifier = modifier
@@ -109,20 +114,33 @@ fun LoginScreen(
             Spacer(modifier = Modifier.height(18.dp))
 
             Button(
-                onClick = onSignInClick,
+                onClick = {
+                    viewModel?.login(email = email, password = password, onSuccess = onSignInClick)
+                        ?: onSignInClick()
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(58.dp),
+                enabled = !uiState.isLoading,
                 colors = ButtonDefaults.buttonColors(containerColor = WarmBlue),
                 contentPadding = PaddingValues(0.dp),
                 shape = RoundedCornerShape(12.dp),
                 elevation = ButtonDefaults.buttonElevation(defaultElevation = 2.dp),
             ) {
                 Text(
-                    text = "로그인",
+                    text = if (uiState.isLoading) "로그인 중..." else "로그인",
                     color = Color.White,
                     fontSize = 19.sp,
                     fontWeight = FontWeight.ExtraBold,
+                )
+            }
+
+            uiState.errorMessage?.let { errorMessage ->
+                Text(
+                    text = errorMessage,
+                    color = Color(0xFFD32F2F),
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.SemiBold,
                 )
             }
 

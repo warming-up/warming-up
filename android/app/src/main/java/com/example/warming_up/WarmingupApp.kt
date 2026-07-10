@@ -21,12 +21,15 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.warming_up.data.auth.AuthRepository
 import com.example.warming_up.data.route.DESTINATION_PRESETS
 import com.example.warming_up.data.routine.Routine
 import com.example.warming_up.data.routine.RoutineApiException
 import com.example.warming_up.data.routine.RoutineRepository
 import com.example.warming_up.navigation.BottomTab
+import com.example.warming_up.network.NetworkModule
 import com.example.warming_up.ui.login.LoginScreen
+import com.example.warming_up.ui.login.LoginViewModel
 import com.example.warming_up.ui.preparation.DestinationPickerDialog
 import com.example.warming_up.ui.preparation.PreparationScreen
 import com.example.warming_up.ui.route.RouteEtaViewModel
@@ -43,6 +46,7 @@ fun WarmingupApp(modifier: Modifier = Modifier) {
     var routineUiState by remember { mutableStateOf(RoutineUiState()) }
     var destination by remember { mutableStateOf(DESTINATION_PRESETS.first()) }
     var showDestinationPicker by remember { mutableStateOf(false) }
+    var isAuthenticated by remember { mutableStateOf(false) }
     val locationPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions(),
     ) { permissions ->
@@ -51,7 +55,9 @@ fun WarmingupApp(modifier: Modifier = Modifier) {
         routeEtaViewModel.onPermissionResult(granted, destination.coordinate)
     }
 
-    LaunchedEffect(routineRepository) {
+    LaunchedEffect(isAuthenticated, routineRepository) {
+        if (!isAuthenticated) return@LaunchedEffect
+
         routineUiState = routineUiState.copy(isLoading = true, errorMessage = null)
 
         routineRepository.getRoutines()
@@ -75,8 +81,18 @@ fun WarmingupApp(modifier: Modifier = Modifier) {
         modifier = modifier.fillMaxSize(),
     ) {
         composable(LoginRoute) {
+            val context = LocalContext.current
+            val authRepository = remember(context) {
+                AuthRepository(NetworkModule.authApi(context))
+            }
+            val loginViewModel: LoginViewModel = viewModel(
+                factory = LoginViewModel.factory(authRepository),
+            )
+
             LoginScreen(
+                viewModel = loginViewModel,
                 onSignInClick = {
+                    isAuthenticated = true
                     navController.navigate(BottomTab.Now.route) {
                         popUpTo(LoginRoute) {
                             inclusive = true
