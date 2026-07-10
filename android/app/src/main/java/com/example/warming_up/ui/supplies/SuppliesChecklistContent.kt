@@ -32,9 +32,17 @@ import com.example.warming_up.ui.theme.WarmText
 import com.example.warming_up.ui.theme.WarmingupTheme
 
 @Composable
-fun SuppliesChecklistContent(modifier: Modifier = Modifier) {
-    val supplies = listOf("지갑", "신용카드", "보조배터리", "지훈이 선물", "접이식 우산 · 비 예보")
-    val checked = remember { mutableStateListOf(false, false, false, false, false) }
+fun SuppliesChecklistContent(
+    modifier: Modifier = Modifier,
+    supplies: List<String> = emptyList(),
+    isLoading: Boolean = false,
+    errorMessage: String? = null,
+) {
+    val checked = remember(supplies) {
+        mutableStateListOf<Boolean>().apply {
+            repeat(supplies.size) { add(false) }
+        }
+    }
     val checkedCount = checked.count { it }
 
     Column(
@@ -68,12 +76,17 @@ fun SuppliesChecklistContent(modifier: Modifier = Modifier) {
                 .background(Color.White)
                 .padding(vertical = 4.dp),
         ) {
-            supplies.forEachIndexed { index, item ->
-                SupplyChecklistItem(
-                    text = item,
-                    checked = checked[index],
-                    onClick = { checked[index] = !checked[index] },
-                )
+            when {
+                isLoading -> SupplyStatusText(text = "준비물을 불러오는 중입니다.")
+                errorMessage != null -> SupplyStatusText(text = errorMessage)
+                supplies.isEmpty() -> SupplyStatusText(text = "표시할 준비물이 없습니다.")
+                else -> supplies.forEachIndexed { index, item ->
+                    SupplyChecklistItem(
+                        text = item,
+                        checked = checked[index],
+                        onClick = { checked[index] = !checked[index] },
+                    )
+                }
             }
         }
 
@@ -85,6 +98,17 @@ fun SuppliesChecklistContent(modifier: Modifier = Modifier) {
             fontWeight = FontWeight.Medium,
         )
     }
+}
+
+@Composable
+private fun SupplyStatusText(text: String) {
+    Text(
+        text = text,
+        modifier = Modifier.padding(horizontal = 14.dp, vertical = 18.dp),
+        color = SuppliesMuted,
+        fontSize = 13.sp,
+        fontWeight = FontWeight.SemiBold,
+    )
 }
 
 @Preview(showBackground = true)

@@ -26,13 +26,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.warming_up.data.routine.Routine
 import com.example.warming_up.ui.component.StatusChip
 import com.example.warming_up.ui.theme.WarmBlue
 import com.example.warming_up.ui.theme.WarmBlueDark
 import com.example.warming_up.ui.theme.WarmingupTheme
 
 @Composable
-fun CurrentPreparationCard() {
+fun CurrentPreparationCard(routine: Routine? = null) {
+    val currentStep = routine?.steps?.firstOrNull()
+    val nextStep = routine?.steps?.drop(1)?.firstOrNull()
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -62,7 +66,10 @@ fun CurrentPreparationCard() {
             }
 
             Spacer(modifier = Modifier.height(10.dp))
-            CircularStepTimer()
+            CircularStepTimer(
+                stepName = currentStep?.name ?: routine?.name ?: "루틴 없음",
+                remainingTimeText = currentStep?.durationMinutes?.toTimerText() ?: "0:00",
+            )
             Spacer(modifier = Modifier.height(16.dp))
 
             Button(
@@ -84,7 +91,7 @@ fun CurrentPreparationCard() {
 
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "다음 · 옷 입기",
+                text = nextStep?.let { "다음 · ${it.name}" } ?: "다음 단계 없음",
                 color = Color.White.copy(alpha = 0.9f),
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Bold,
@@ -102,7 +109,10 @@ private fun CurrentPreparationCardPreview() {
 }
 
 @Composable
-private fun CircularStepTimer() {
+private fun CircularStepTimer(
+    stepName: String,
+    remainingTimeText: String,
+) {
     Box(
         modifier = Modifier
             .size(174.dp)
@@ -125,13 +135,13 @@ private fun CircularStepTimer() {
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
-                text = "샤워",
+                text = stepName,
                 color = Color.White,
                 fontSize = 13.sp,
                 fontWeight = FontWeight.SemiBold,
             )
             Text(
-                text = "8:04",
+                text = remainingTimeText,
                 color = Color.White,
                 fontSize = 44.sp,
                 fontWeight = FontWeight.ExtraBold,
@@ -145,3 +155,5 @@ private fun CircularStepTimer() {
         }
     }
 }
+
+private fun Int.toTimerText(): String = "$this:00"

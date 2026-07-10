@@ -25,7 +25,11 @@ import com.example.warming_up.ui.theme.WarmText
 import com.example.warming_up.ui.theme.WarmingupTheme
 
 @Composable
-fun PreparationProgressSummary() {
+fun PreparationProgressSummary(
+    totalDurationMinutes: Int = 0,
+    completedStepCount: Int = 0,
+    totalStepCount: Int = 0,
+) {
     Column(
         modifier = Modifier.padding(horizontal = 2.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -42,7 +46,7 @@ fun PreparationProgressSummary() {
                 fontWeight = FontWeight.SemiBold,
             )
             Text(
-                text = "약 33분",
+                text = "약 ${totalDurationMinutes}분",
                 color = WarmText,
                 fontSize = 15.sp,
                 fontWeight = FontWeight.ExtraBold,
@@ -50,7 +54,9 @@ fun PreparationProgressSummary() {
         }
 
         LinearProgressIndicator(
-            progress = { 0f },
+            progress = {
+                if (totalStepCount == 0) 0f else completedStepCount.toFloat() / totalStepCount
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(7.dp)
@@ -61,7 +67,7 @@ fun PreparationProgressSummary() {
         )
 
         Text(
-            text = "0 / 4단계 완료",
+            text = "$completedStepCount / ${totalStepCount}단계 완료",
             color = WarmSubText,
             fontSize = 11.sp,
             fontWeight = FontWeight.Medium,

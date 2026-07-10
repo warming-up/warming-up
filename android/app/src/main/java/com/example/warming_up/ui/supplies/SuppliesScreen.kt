@@ -6,6 +6,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.warming_up.data.routine.Routine
 import com.example.warming_up.navigation.BottomTab
 import com.example.warming_up.ui.component.WarmingupBottomBar
 import com.example.warming_up.ui.component.WarmingupHeader
@@ -15,6 +16,9 @@ import com.example.warming_up.ui.theme.WarmingupTheme
 @Composable
 fun SuppliesScreen(
     modifier: Modifier = Modifier,
+    routine: Routine? = null,
+    isLoading: Boolean = false,
+    errorMessage: String? = null,
     onTabClick: (BottomTab) -> Unit = {},
 ) {
     Scaffold(
@@ -32,6 +36,9 @@ fun SuppliesScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding),
+            supplies = routine?.checklist?.map { it.name }.orEmpty(),
+            isLoading = isLoading,
+            errorMessage = errorMessage,
         )
     }
 }

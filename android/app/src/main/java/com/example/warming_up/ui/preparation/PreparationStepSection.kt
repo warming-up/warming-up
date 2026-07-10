@@ -24,6 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.warming_up.data.routine.RoutineStep
 import com.example.warming_up.model.PreparationStep
 import com.example.warming_up.ui.theme.WarmBlue
 import com.example.warming_up.ui.theme.WarmLine
@@ -32,13 +33,14 @@ import com.example.warming_up.ui.theme.WarmText
 import com.example.warming_up.ui.theme.WarmingupTheme
 
 @Composable
-fun PreparationStepSection() {
-    val steps = listOf(
-        PreparationStep("샤워", "07:31 시작 · 10분", true),
-        PreparationStep("옷 입기", "07:41 시작 · 7분", false),
-        PreparationStep("아침 식사", "07:48 시작 · 12분", false),
-        PreparationStep("출발 준비", "08:00 시작 · 20분", false),
-    )
+fun PreparationStepSection(steps: List<RoutineStep> = emptyList()) {
+    val preparationSteps = steps.mapIndexed { index, step ->
+        PreparationStep(
+            name = step.name,
+            timeText = "${step.durationMinutes}분",
+            isRunning = index == 0,
+        )
+    }
 
     Column(verticalArrangement = Arrangement.spacedBy(9.dp)) {
         Row(
@@ -69,7 +71,17 @@ fun PreparationStepSection() {
             elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
         ) {
             Column(modifier = Modifier.padding(vertical = 4.dp)) {
-                steps.forEach { step ->
+                if (preparationSteps.isEmpty()) {
+                    Text(
+                        text = "표시할 준비 단계가 없습니다.",
+                        modifier = Modifier.padding(horizontal = 14.dp, vertical = 18.dp),
+                        color = WarmSubText,
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.SemiBold,
+                    )
+                }
+
+                preparationSteps.forEach { step ->
                     PreparationStepItem(step = step)
                 }
             }
