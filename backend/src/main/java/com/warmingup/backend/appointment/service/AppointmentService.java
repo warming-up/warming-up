@@ -65,6 +65,12 @@ public class AppointmentService {
         return AppointmentResponse.from(appointmentRepository.saveAndFlush(appointment));
     }
 
+    public AppointmentResponse getAppointment(Long currentUserId, Long appointmentId) {
+        Appointment appointment = appointmentRepository.findByIdAndUserIdWithItems(appointmentId, currentUserId)
+                .orElseThrow(() -> new NoSuchElementException("약속을 찾을 수 없습니다."));
+        return AppointmentResponse.from(appointment);
+    }
+
     private Routine findRoutine(Long currentUserId, Long routineId) {
         if (routineId == null) {
             return null;

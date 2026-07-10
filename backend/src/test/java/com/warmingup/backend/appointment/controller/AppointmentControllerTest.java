@@ -97,6 +97,59 @@ class AppointmentControllerTest {
         );
     }
 
+    @Test
+    void getsCreatedAppointmentByCurrentUser() throws Exception {
+        User user = userRepository.save(User.builder()
+                .email("appointment-controller-get-user@example.com")
+                .password(passwordEncoder.encode("password"))
+                .build());
+        Routine routine = saveRoutineWithItems(user);
+        AppointmentCreateRequest request = new AppointmentCreateRequest(
+                routine.getId(),
+                "토스 면접",
+                LocalDateTime.of(2026, 7, 10, 18, 0),
+                40,
+                10
+        );
+        HttpClient client = HttpClient.newHttpClient();
+        String cookie = client.send(
+                        jsonPost("/api/auth/login", new LoginRequest(user.getEmail(), "password")).build(),
+                        HttpResponse.BodyHandlers.ofString()
+                )
+                .headers()
+                .firstValue("set-cookie")
+                .orElseThrow();
+        AppointmentResponse created = objectMapper.readValue(client.send(
+                jsonPost("/api/appointments", request)
+                        .header("Cookie", cookie)
+                        .build(),
+                HttpResponse.BodyHandlers.ofString()
+        ).body(), AppointmentResponse.class);
+
+        HttpResponse<String> response = client.send(
+                HttpRequest.newBuilder(URI.create("http://localhost:" + port + "/api/appointments/" + created.id()))
+                        .header("Cookie", cookie)
+                        .GET()
+                        .build(),
+                HttpResponse.BodyHandlers.ofString()
+        );
+        AppointmentResponse found = objectMapper.readValue(response.body(), AppointmentResponse.class);
+
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(200),
+                () -> assertThat(found.id()).isEqualTo(created.id()),
+                () -> assertThat(found.name()).isEqualTo(created.name()),
+                () -> assertThat(found.preparationStartTime()).isEqualTo(created.preparationStartTime()),
+                () -> assertThat(found.departureTime()).isEqualTo(created.departureTime()),
+                () -> assertThat(found.steps())
+                        .extracting("name")
+                        .containsExactly("씻기", "옷 입기"),
+                () -> assertThat(found.checklist())
+                        .extracting("name")
+                        .containsExactly("신분증")
+        );
+    }
+
     private HttpRequest.Builder jsonPost(String path, Object body) throws Exception {
         return HttpRequest.newBuilder(URI.create("http://localhost:" + port + path))
                 .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)

@@ -119,6 +119,55 @@ class AppointmentServiceTest {
                 .hasMessageContaining("루틴");
     }
 
+    @Test
+    void getsAppointmentByCurrentUserWithItemsSeparatedAndOrdered() {
+        User user = saveUser("appointment-service-get-user@example.com");
+        Routine routine = saveRoutineWithItems(user);
+        AppointmentResponse created = appointmentService.createAppointment(
+                user.getId(),
+                new AppointmentCreateRequest(
+                        routine.getId(),
+                        "토스 면접",
+                        LocalDateTime.of(2026, 7, 10, 18, 0),
+                        40,
+                        10
+                )
+        );
+
+        AppointmentResponse found = appointmentService.getAppointment(user.getId(), created.id());
+
+        assertThat(found.id()).isEqualTo(created.id());
+        assertThat(found.preparationStartTime()).isEqualTo(created.preparationStartTime());
+        assertThat(found.departureTime()).isEqualTo(created.departureTime());
+        assertThat(found.steps())
+                .extracting("name")
+                .containsExactly("씻기", "옷 입기");
+        assertThat(found.checklist())
+                .extracting("name")
+                .containsExactly("신분증");
+    }
+
+    @Test
+    void rejectsAppointmentOwnedByOtherUserAsNotFound() {
+        User owner = saveUser("appointment-service-get-owner@example.com");
+        User other = saveUser("appointment-service-get-other@example.com");
+        Routine routine = saveRoutineWithItems(owner);
+        AppointmentResponse created = appointmentService.createAppointment(
+                owner.getId(),
+                new AppointmentCreateRequest(
+                        routine.getId(),
+                        "토스 면접",
+                        LocalDateTime.of(2026, 7, 10, 18, 0),
+                        40,
+                        10
+                )
+        );
+
+        assertThatThrownBy(() -> appointmentService.getAppointment(other.getId(), created.id()))
+                .isInstanceOf(NoSuchElementException.class)
+                .hasMessageContaining("약속");
+    }
+
     private User saveUser(String email) {
         return userRepository.save(User.builder()
                 .email(email)

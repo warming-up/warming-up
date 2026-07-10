@@ -10,6 +10,8 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,6 +32,12 @@ public class AppointmentController {
     @Operation(summary = "약속 생성")
     public AppointmentResponse create(@RequestBody @Valid AppointmentCreateRequest request, HttpSession session) {
         return appointmentService.createAppointment(getLoginUserId(session), request);
+    }
+
+    @GetMapping("/{appointmentId}")
+    @Operation(summary = "약속 단건 조회")
+    public AppointmentResponse getAppointment(@PathVariable Long appointmentId, HttpSession session) {
+        return appointmentService.getAppointment(getLoginUserId(session), appointmentId);
     }
 
     private Long getLoginUserId(HttpSession session) {
