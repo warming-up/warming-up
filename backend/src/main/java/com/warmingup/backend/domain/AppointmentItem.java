@@ -37,6 +37,10 @@ public class AppointmentItem {
 
     private boolean completed;
 
+    public void assignAppointment(Appointment appointment) {
+        this.appointment = appointment;
+    }
+
     public void complete() {
         this.completed = true;
     }

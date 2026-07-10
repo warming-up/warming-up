@@ -44,4 +44,9 @@ public class Appointment {
     @OneToMany(mappedBy = "appointment", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("itemOrder ASC")
     private List<AppointmentItem> items = new ArrayList<>();
+
+    public void addItem(AppointmentItem item) {
+        items.add(item);
+        item.assignAppointment(this);
+    }
 }
