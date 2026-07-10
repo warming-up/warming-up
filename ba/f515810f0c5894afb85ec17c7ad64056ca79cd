@@ -1,0 +1,25 @@
+backend/src/main/java/com/warmingup/backend/common/GlobalExceptionHandler.java
+  s_75d42ec4a069eb::t_ca9b149a278ab4 4,10,31-35
+  s_75d42ec4a069eb::t_8d73b0a852e108 36-37
+backend/src/test/resources/application.yaml
+  s_75d42ec4a069eb::t_ca9b149a278ab4 10
+backend/src/test/java/com/warmingup/backend/appointment/controller/AppointmentControllerTest.java
+  s_75d42ec4a069eb::t_48727813b5c1af 209-371,378-393
+  s_75d42ec4a069eb::t_62e303fbdaff6e 394
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "baf515810f0c5894afb85ec17c7ad64056ca79cd",
+  "prompts": {},
+  "sessions": {
+    "s_75d42ec4a069eb": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f4aa6-dffe-7b41-830e-a4c3f64b55ca",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Mint <audwl03071@gmail.com>"
+    }
+  }
+}
