@@ -2,6 +2,7 @@ package com.warmingup.backend.appointment.service;
 
 import com.warmingup.backend.appointment.dto.AppointmentCreateRequest;
 import com.warmingup.backend.appointment.dto.AppointmentResponse;
+import com.warmingup.backend.appointment.repository.AppointmentItemRepository;
 import com.warmingup.backend.appointment.repository.AppointmentRepository;
 import com.warmingup.backend.appointment.support.AppointmentTimeCalculation;
 import com.warmingup.backend.appointment.support.AppointmentTimeCalculator;
@@ -27,6 +28,7 @@ import java.util.NoSuchElementException;
 public class AppointmentService {
 
     private final AppointmentRepository appointmentRepository;
+    private final AppointmentItemRepository appointmentItemRepository;
     private final RoutineRepository routineRepository;
     private final UserRepository userRepository;
     private final AppointmentTimeCalculator appointmentTimeCalculator;
@@ -69,6 +71,14 @@ public class AppointmentService {
         Appointment appointment = appointmentRepository.findByIdAndUserIdWithItems(appointmentId, currentUserId)
                 .orElseThrow(() -> new NoSuchElementException("약속을 찾을 수 없습니다."));
         return AppointmentResponse.from(appointment);
+    }
+
+    @Transactional
+    public void completeItem(Long currentUserId, Long appointmentId, Long itemId) {
+        AppointmentItem item = appointmentItemRepository
+                .findByIdAndAppointmentIdAndAppointmentUserId(itemId, appointmentId, currentUserId)
+                .orElseThrow(() -> new NoSuchElementException("약속 항목을 찾을 수 없습니다."));
+        item.complete();
     }
 
     private Routine findRoutine(Long currentUserId, Long routineId) {

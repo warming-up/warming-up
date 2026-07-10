@@ -146,7 +146,63 @@ class AppointmentControllerTest {
                         .containsExactly("씻기", "옷 입기"),
                 () -> assertThat(found.checklist())
                         .extracting("name")
-                        .containsExactly("신분증")
+                .containsExactly("신분증")
+        );
+    }
+
+    @Test
+    void completesItemAndReturnsUpdatedStateOnGet() throws Exception {
+        User user = userRepository.save(User.builder()
+                .email("appointment-controller-complete-user@example.com")
+                .password(passwordEncoder.encode("password"))
+                .build());
+        Routine routine = saveRoutineWithItems(user);
+        AppointmentCreateRequest request = new AppointmentCreateRequest(
+                routine.getId(),
+                "토스 면접",
+                LocalDateTime.of(2026, 7, 10, 18, 0),
+                40,
+                10
+        );
+        HttpClient client = HttpClient.newHttpClient();
+        String cookie = client.send(
+                        jsonPost("/api/auth/login", new LoginRequest(user.getEmail(), "password")).build(),
+                        HttpResponse.BodyHandlers.ofString()
+                )
+                .headers()
+                .firstValue("set-cookie")
+                .orElseThrow();
+        AppointmentResponse created = objectMapper.readValue(client.send(
+                jsonPost("/api/appointments", request)
+                        .header("Cookie", cookie)
+                        .build(),
+                HttpResponse.BodyHandlers.ofString()
+        ).body(), AppointmentResponse.class);
+
+        HttpResponse<String> completeResponse = client.send(
+                HttpRequest.newBuilder(URI.create("http://localhost:" + port
+                                + "/api/appointments/" + created.id()
+                                + "/items/" + created.steps().get(0).id()
+                                + "/complete"))
+                        .header("Cookie", cookie)
+                        .method("PATCH", HttpRequest.BodyPublishers.noBody())
+                        .build(),
+                HttpResponse.BodyHandlers.ofString()
+        );
+        HttpResponse<String> getResponse = client.send(
+                HttpRequest.newBuilder(URI.create("http://localhost:" + port + "/api/appointments/" + created.id()))
+                        .header("Cookie", cookie)
+                        .GET()
+                        .build(),
+                HttpResponse.BodyHandlers.ofString()
+        );
+        AppointmentResponse found = objectMapper.readValue(getResponse.body(), AppointmentResponse.class);
+
+        assertAll(
+                () -> assertThat(completeResponse.statusCode()).isEqualTo(200),
+                () -> assertThat(getResponse.statusCode()).isEqualTo(200),
+                () -> assertThat(found.steps().get(0).completed()).isTrue(),
+                () -> assertThat(found.checklist().get(0).completed()).isFalse()
         );
     }
 

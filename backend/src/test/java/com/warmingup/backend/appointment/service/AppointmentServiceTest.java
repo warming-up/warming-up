@@ -168,6 +168,62 @@ class AppointmentServiceTest {
                 .hasMessageContaining("약속");
     }
 
+    @Test
+    void completesStepAndChecklistItemsIdempotently() {
+        User user = saveUser("appointment-service-complete-user@example.com");
+        Routine routine = saveRoutineWithItems(user);
+        AppointmentResponse created = appointmentService.createAppointment(
+                user.getId(),
+                new AppointmentCreateRequest(
+                        routine.getId(),
+                        "토스 면접",
+                        LocalDateTime.of(2026, 7, 10, 18, 0),
+                        40,
+                        10
+                )
+        );
+        Long stepId = created.steps().get(0).id();
+        Long checklistId = created.checklist().get(0).id();
+
+        appointmentService.completeItem(user.getId(), created.id(), stepId);
+        appointmentService.completeItem(user.getId(), created.id(), stepId);
+        appointmentService.completeItem(user.getId(), created.id(), checklistId);
+
+        AppointmentResponse found = appointmentService.getAppointment(user.getId(), created.id());
+        assertThat(found.steps().get(0).completed()).isTrue();
+        assertThat(found.checklist().get(0).completed()).isTrue();
+    }
+
+    @Test
+    void rejectsItemFromOtherAppointmentAsNotFound() {
+        User user = saveUser("appointment-service-wrong-item-user@example.com");
+        Routine routine = saveRoutineWithItems(user);
+        AppointmentResponse first = appointmentService.createAppointment(
+                user.getId(),
+                new AppointmentCreateRequest(
+                        routine.getId(),
+                        "첫 약속",
+                        LocalDateTime.of(2026, 7, 10, 18, 0),
+                        40,
+                        10
+                )
+        );
+        AppointmentResponse second = appointmentService.createAppointment(
+                user.getId(),
+                new AppointmentCreateRequest(
+                        routine.getId(),
+                        "두 번째 약속",
+                        LocalDateTime.of(2026, 7, 11, 18, 0),
+                        40,
+                        10
+                )
+        );
+
+        assertThatThrownBy(() -> appointmentService.completeItem(user.getId(), first.id(), second.steps().get(0).id()))
+                .isInstanceOf(NoSuchElementException.class)
+                .hasMessageContaining("약속 항목");
+    }
+
     private User saveUser(String email) {
         return userRepository.save(User.builder()
                 .email(email)

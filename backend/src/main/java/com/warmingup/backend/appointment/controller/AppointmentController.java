@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,6 +39,17 @@ public class AppointmentController {
     @Operation(summary = "약속 단건 조회")
     public AppointmentResponse getAppointment(@PathVariable Long appointmentId, HttpSession session) {
         return appointmentService.getAppointment(getLoginUserId(session), appointmentId);
+    }
+
+    @PatchMapping("/{appointmentId}/items/{itemId}/complete")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "약속 항목 완료 처리")
+    public void completeItem(
+            @PathVariable Long appointmentId,
+            @PathVariable Long itemId,
+            HttpSession session
+    ) {
+        appointmentService.completeItem(getLoginUserId(session), appointmentId, itemId);
     }
 
     private Long getLoginUserId(HttpSession session) {
