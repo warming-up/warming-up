@@ -1,0 +1,74 @@
+android/app/src/main/java/com/example/warming_up/WarmingupApp.kt
+  s_b6570a35a20bc9::t_e858d93f2dad38 67,102-114
+  s_b6570a35a20bc9::t_c3cb5479e3143b 65
+  s_052c9e72ac52b5::t_f56a36c2386b31 3-7,15,17-18,31,36,39,43-47,49,63-64,66,80-82,84-87,117-121,139-149
+  s_b6570a35a20bc9::t_05ece841d8318f 41-42,48
+  s_b6570a35a20bc9::t_c5cdc92164ae50 24,29
+  s_b6570a35a20bc9::t_1cb7639aa11bdc 79,83,88
+  s_b6570a35a20bc9::t_74b2dca68a32c8 68
+  s_b6570a35a20bc9::t_1bb8bf0444aa5a 101
+  s_052c9e72ac52b5::t_5a773c3abe8091 150-151
+android/app/src/main/java/com/example/warming_up/data/route/RoutesApiClient.kt
+  s_052c9e72ac52b5::t_cf70b42ce938fd 1-89
+android/app/src/main/java/com/example/warming_up/location/LocationProvider.kt
+  s_052c9e72ac52b5::t_cf70b42ce938fd 1-85
+android/app/src/main/java/com/example/warming_up/ui/route/RouteEtaUiState.kt
+  s_052c9e72ac52b5::t_a2285529bc8991 1-21
+android/gradle/libs.versions.toml
+  s_052c9e72ac52b5::t_cf70b42ce938fd 12,20,31
+android/app/src/main/java/com/example/warming_up/data/route/Destination.kt
+  s_b6570a35a20bc9::t_f7657b545667c8 1-11
+android/app/src/main/AndroidManifest.xml
+  s_052c9e72ac52b5::t_cf70b42ce938fd 6-7
+android/app/src/main/java/com/example/warming_up/ui/preparation/PreparationScreen.kt
+  s_b6570a35a20bc9::t_e922b774c37a07 76,79
+  s_b6570a35a20bc9::t_ed28e801fb5491 31,34
+  s_052c9e72ac52b5::t_f56a36c2386b31 23,32-33,74-75,77-78,80-81
+android/app/src/main/java/com/example/warming_up/ui/preparation/DestinationSummaryCard.kt
+  s_b6570a35a20bc9::t_06c9491fab8ca3 3
+  s_b6570a35a20bc9::t_06bcf223a3005a 51,59
+  s_052c9e72ac52b5::t_f56a36c2386b31 12,25-27,33,35-36,38,65-72,78,81-89,94-122
+  s_b6570a35a20bc9::t_e77ee964cb1c6c 34,37
+  s_052c9e72ac52b5::t_7a7c019316367b 123
+android/app/src/main/java/com/example/warming_up/data/route/RouteEta.kt
+  s_052c9e72ac52b5::t_cf70b42ce938fd 1-13
+android/app/src/main/java/com/example/warming_up/data/route/RoutesRepository.kt
+  s_052c9e72ac52b5::t_cf70b42ce938fd 1-9
+android/app/src/main/java/com/example/warming_up/ui/route/RouteEtaViewModel.kt
+  s_052c9e72ac52b5::t_a2285529bc8991 1-97
+android/app/src/main/java/com/example/warming_up/ui/preparation/DestinationPickerDialog.kt
+  s_b6570a35a20bc9::t_3c03fae555c571 1-139
+android/app/src/main/java/com/example/warming_up/location/DeviceLocation.kt
+  s_052c9e72ac52b5::t_cf70b42ce938fd 1-6
+android/app/build.gradle.kts
+  s_052c9e72ac52b5::t_cf70b42ce938fd 45,53
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "02361986da7641fbd7f8e6bc4053e98cf35c56f0",
+  "prompts": {},
+  "humans": {
+    "h_3dcfd613e97439": {
+      "author": "Mint <audwl03071@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_052c9e72ac52b5": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f4af8-2072-7311-bdde-6b06c292f1de",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Mint <audwl03071@gmail.com>"
+    },
+    "s_b6570a35a20bc9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c0d2013c-ba9b-4666-a0ec-5efea1f37d7a",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Mint <audwl03071@gmail.com>"
+    }
+  }
+}
