@@ -1,0 +1,26 @@
+backend/src/test/java/com/warmingup/backend/routine/RoutineControllerTest.java
+  s_82a57d1d4060f8::t_072ad76f88ac77 31-33
+  s_82a57d1d4060f8::t_6bfc5255798415 1-3,6-30,34-297
+  s_82a57d1d4060f8::t_0c13faf5702599 4-5
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "2513f09ccf459536f0e5f74e808ee636fab55f3f",
+  "prompts": {},
+  "humans": {
+    "h_3dcfd613e97439": {
+      "author": "Mint <audwl03071@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_82a57d1d4060f8": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bf74fd7e-c499-4fd9-b254-36f6a6b53ef5",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Mint <audwl03071@gmail.com>"
+    }
+  }
+}
