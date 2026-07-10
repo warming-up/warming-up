@@ -1,0 +1,29 @@
+android/app/src/main/java/com/example/warming_up/ui/preparation/DestinationPickerDialog.kt
+  s_b6570a35a20bc9::t_7d555c6fe0211f 9
+  s_b6570a35a20bc9::t_d82fbb5e953a19 3,12,21,28-31,35-41,47,49,56-57,78-126,131,133,136,171-180
+android/app/src/main/java/com/example/warming_up/data/route/GeocodeRepository.kt
+  s_b6570a35a20bc9::t_7653fa8c911353 1-9
+android/app/src/main/java/com/example/warming_up/data/route/GeocodeApiClient.kt
+  s_b6570a35a20bc9::t_c7a2d08073b0c7 1-62
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "ca355beaee8af4a43f1c2827e140c7f4cf422aca",
+  "prompts": {},
+  "humans": {
+    "h_3dcfd613e97439": {
+      "author": "Mint <audwl03071@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_b6570a35a20bc9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c0d2013c-ba9b-4666-a0ec-5efea1f37d7a",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Mint <audwl03071@gmail.com>"
+    }
+  }
+}
