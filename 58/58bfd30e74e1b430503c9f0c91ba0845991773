@@ -1,0 +1,50 @@
+backend/src/main/java/com/warmingup/backend/domain/Appointment.java
+  s_75d42ec4a069eb::t_fe8bcd9536fea5 47-51
+backend/src/main/java/com/warmingup/backend/appointment/repository/AppointmentRepository.java
+  s_75d42ec4a069eb::t_fe8bcd9536fea5 1-7
+backend/src/main/java/com/warmingup/backend/appointment/repository/AppointmentItemRepository.java
+  s_75d42ec4a069eb::t_fe8bcd9536fea5 1-7
+backend/src/test/java/com/warmingup/backend/appointment/service/AppointmentServiceTest.java
+  s_75d42ec4a069eb::t_13b90187c8c8fb 1-157
+backend/src/main/java/com/warmingup/backend/routine/RoutineRepository.java
+  s_75d42ec4a069eb::t_fe8bcd9536fea5 5,7,10,14-21
+backend/src/main/java/com/warmingup/backend/appointment/dto/AppointmentChecklistResponse.java
+  s_75d42ec4a069eb::t_fe8bcd9536fea5 1-9
+backend/src/main/java/com/warmingup/backend/domain/AppointmentItem.java
+  s_75d42ec4a069eb::t_fe8bcd9536fea5 40-43
+backend/src/main/java/com/warmingup/backend/appointment/dto/AppointmentStepResponse.java
+  s_75d42ec4a069eb::t_fe8bcd9536fea5 1-14
+backend/src/main/java/com/warmingup/backend/appointment/service/AppointmentService.java
+  s_75d42ec4a069eb::t_fe8bcd9536fea5 1-102
+backend/src/test/java/com/warmingup/backend/appointment/controller/AppointmentControllerTest.java
+  s_75d42ec4a069eb::t_d9b99cbd7f6957 7-8,18,29,32-33,65-66,71
+  s_75d42ec4a069eb::t_b62f82bced5e82 30,83-97
+  s_75d42ec4a069eb::t_13def42991952c 69
+  s_75d42ec4a069eb::t_171922b6c0de0f 4,36-37
+  s_75d42ec4a069eb::t_edeea15928891a 21,48-50,55
+  s_75d42ec4a069eb::t_d0279457d1fe3e 5,35
+  s_75d42ec4a069eb::t_13b90187c8c8fb 1-2,6,9-17,20,22,27-28,31,34,38,42-47,51-54,56-64,80-81,104-134
+  s_75d42ec4a069eb::t_b4848f9d7a2017 3,19,23-26,39-41,67-68,70,72-79,82,98-103
+backend/src/main/java/com/warmingup/backend/appointment/controller/AppointmentController.java
+  s_75d42ec4a069eb::t_fe8bcd9536fea5 1-42
+backend/src/main/java/com/warmingup/backend/appointment/dto/AppointmentCreateRequest.java
+  s_75d42ec4a069eb::t_fe8bcd9536fea5 1-16
+backend/src/main/java/com/warmingup/backend/appointment/dto/AppointmentResponse.java
+  s_75d42ec4a069eb::t_fe8bcd9536fea5 1-56
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "5858bfd30e74e1b430503c9f0c91ba0845991773",
+  "prompts": {},
+  "sessions": {
+    "s_75d42ec4a069eb": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f4aa6-dffe-7b41-830e-a4c3f64b55ca",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Mint <audwl03071@gmail.com>"
+    }
+  }
+}
