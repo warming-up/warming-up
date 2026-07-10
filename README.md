@@ -9,10 +9,19 @@ This repository is organized as an Android + backend monorepo.
 
 ## Backend
 
-Run backend Gradle commands from the `backend/` directory:
+Initial server setup:
 
 ```sh
 cd backend
-./gradlew test
-./gradlew bootRun
+cp .env.example .env
+docker-compose up --build
+```
+
+The server runs at `http://localhost:8080`.
+
+Stop the server:
+
+```sh
+cd backend
+docker-compose down
 ```
