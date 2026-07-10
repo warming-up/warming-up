@@ -1,0 +1,29 @@
+backend/src/main/java/com/warmingup/backend/auth/AuthController.java
+  s_69f3be6a4ea57a::t_c0975c99f40b92 8,32,34,42-46
+backend/src/main/java/com/warmingup/backend/routine/RoutineController.java
+  s_69f3be6a4ea57a::t_c0975c99f40b92 3,8,23,32,37-38,43-44,51-52,58-59
+  s_69f3be6a4ea57a::t_bc7c1191dea406 28-31
+backend/src/main/java/com/warmingup/backend/appointment/controller/AppointmentController.java
+  s_69f3be6a4ea57a::t_c0975c99f40b92 6,9,29,38,43-44,53,55
+  s_69f3be6a4ea57a::t_bc7c1191dea406 34-37
+backend/src/main/java/com/warmingup/backend/auth/AuthSession.java
+  s_69f3be6a4ea57a::t_c0975c99f40b92 1-14,16-18,21,24-25,28-29
+  s_69f3be6a4ea57a::t_0cd44a99f6e823 15,23,26-27
+  s_69f3be6a4ea57a::t_328d0f773743f4 19-20,22
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "2edc73d6a876d86245ed1d98c93d49cdfdd99d48",
+  "prompts": {},
+  "sessions": {
+    "s_69f3be6a4ea57a": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f4ac1-9af2-71c2-9049-fed820459162",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Mint <audwl03071@gmail.com>"
+    }
+  }
+}
