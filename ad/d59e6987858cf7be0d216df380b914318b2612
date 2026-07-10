@@ -1,0 +1,48 @@
+android/app/src/main/java/com/example/warming_up/ui/preparation/PreparationStepSection.kt
+  s_052c9e72ac52b5::t_4e1eeae24ed9d7 27,36-43,74-84
+android/app/src/main/java/com/example/warming_up/ui/supplies/SuppliesChecklistContent.kt
+  s_052c9e72ac52b5::t_9367163a76dc2b 35-45,79-89,103-111
+  s_052c9e72ac52b5::t_87974ab70df3c1 112-113
+android/app/src/main/AndroidManifest.xml
+  s_052c9e72ac52b5::t_4d4673ba6e010f 5-6,15-16
+android/app/src/main/java/com/example/warming_up/data/routine/Routine.kt
+  s_052c9e72ac52b5::t_6b1f1dbe1c940e 1-23
+android/app/src/main/java/com/example/warming_up/ui/preparation/CurrentPreparationCard.kt
+  s_052c9e72ac52b5::t_b68dc75694f36d 29,36-39,69-72,94,112-115,138,144,158-159
+android/app/src/main/java/com/example/warming_up/WarmingupApp.kt
+  s_052c9e72ac52b5::t_81aac02b3060c0 5-9,16-18,26-39,48-50,56-58,65-80
+  s_052c9e72ac52b5::t_dedd6bb9ea6315 81
+android/app/src/main/java/com/example/warming_up/ui/preparation/PreparationScreen.kt
+  s_052c9e72ac52b5::t_8f3c6d4567d122 9,12,15-16,21,27-29,55-68,70,75-83
+  s_052c9e72ac52b5::t_f0181dc18e8dfe 84-85
+android/app/src/main/java/com/example/warming_up/ui/preparation/PreparationProgressSummary.kt
+  s_052c9e72ac52b5::t_5a97a0f72ff86e 28-32,49,57-59,70
+android/app/src/main/java/com/example/warming_up/data/routine/RoutineRepository.kt
+  s_052c9e72ac52b5::t_6b1f1dbe1c940e 1-9
+android/app/src/main/java/com/example/warming_up/data/routine/RoutineApiClient.kt
+  s_052c9e72ac52b5::t_6b1f1dbe1c940e 1-8,12-89,96-102
+  s_052c9e72ac52b5::t_21005b0f1d3797 9-11,90-95
+android/app/src/main/java/com/example/warming_up/ui/supplies/SuppliesScreen.kt
+  s_052c9e72ac52b5::t_93729d072f5dac 9,19-21,39-41
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "add59e6987858cf7be0d216df380b914318b2612",
+  "prompts": {},
+  "humans": {
+    "h_3dcfd613e97439": {
+      "author": "Mint <audwl03071@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_052c9e72ac52b5": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f4af8-2072-7311-bdde-6b06c292f1de",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Mint <audwl03071@gmail.com>"
+    }
+  }
+}
