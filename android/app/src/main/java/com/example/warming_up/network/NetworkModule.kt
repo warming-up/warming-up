@@ -11,13 +11,24 @@ object NetworkModule {
     @Volatile
     private var authApi: AuthApi? = null
 
+    @Volatile
+    private var routineApi: RoutineApi? = null
+
     fun authApi(context: Context): AuthApi {
         return authApi ?: synchronized(this) {
-            authApi ?: buildAuthApi(context.applicationContext).also { authApi = it }
+            authApi ?: buildApi(context.applicationContext, AuthApi::class.java)
+                .also { authApi = it }
         }
     }
 
-    private fun buildAuthApi(context: Context): AuthApi {
+    fun routineApi(context: Context): RoutineApi {
+        return routineApi ?: synchronized(this) {
+            routineApi ?: buildApi(context.applicationContext, RoutineApi::class.java)
+                .also { routineApi = it }
+        }
+    }
+
+    private fun <T> buildApi(context: Context, service: Class<T>): T {
         val client = OkHttpClient.Builder()
             .cookieJar(SessionCookieJar(context))
             .build()
@@ -27,6 +38,6 @@ object NetworkModule {
             .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-            .create(AuthApi::class.java)
+            .create(service)
     }
 }

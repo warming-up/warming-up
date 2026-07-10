@@ -24,7 +24,9 @@ import com.example.warming_up.ui.theme.WarmingupTheme
 private val HeaderLogoHeight = 40.dp
 
 @Composable
-fun WarmingupHeader() {
+fun WarmingupHeader(
+    showReset: Boolean = true,
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -41,18 +43,20 @@ fun WarmingupHeader() {
             contentScale = ContentScale.Fit,
         )
 
-        IconButton(
-            onClick = {},
-            modifier = Modifier
-                .align(Alignment.CenterEnd)
-                .size(HeaderLogoHeight),
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.ic_refresh),
-                contentDescription = "초기화",
-                modifier = Modifier.size(25.dp),
-                tint = ResetIconColor,
-            )
+        if (showReset) {
+            IconButton(
+                onClick = {},
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .size(HeaderLogoHeight),
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_refresh),
+                    contentDescription = "초기화",
+                    modifier = Modifier.size(25.dp),
+                    tint = ResetIconColor,
+                )
+            }
         }
     }
 }

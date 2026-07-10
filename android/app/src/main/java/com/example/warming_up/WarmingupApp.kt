@@ -33,20 +33,26 @@ import com.example.warming_up.ui.login.LoginViewModel
 import com.example.warming_up.ui.preparation.DestinationPickerDialog
 import com.example.warming_up.ui.preparation.PreparationScreen
 import com.example.warming_up.ui.route.RouteEtaViewModel
+import com.example.warming_up.ui.routine.RoutineCreateViewModel
+import com.example.warming_up.ui.routine.RoutineSelectionScreen
 import com.example.warming_up.ui.supplies.SuppliesScreen
 
 private const val LoginRoute = "login"
+private const val RoutineSelectionRoute = "routine-selection"
 
 @Composable
 fun WarmingupApp(modifier: Modifier = Modifier) {
     val context = LocalContext.current
     val navController = rememberNavController()
-    val routineRepository = remember { RoutineRepository() }
+    val routineRepository = remember(context) {
+        RoutineRepository(NetworkModule.routineApi(context))
+    }
     val routeEtaViewModel: RouteEtaViewModel = viewModel()
     var routineUiState by remember { mutableStateOf(RoutineUiState()) }
     var destination by remember { mutableStateOf(DESTINATION_PRESETS.first()) }
     var showDestinationPicker by remember { mutableStateOf(false) }
     var isAuthenticated by remember { mutableStateOf(false) }
+    var routineReloadKey by remember { mutableStateOf(0) }
     val locationPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions(),
     ) { permissions ->
@@ -55,7 +61,7 @@ fun WarmingupApp(modifier: Modifier = Modifier) {
         routeEtaViewModel.onPermissionResult(granted, destination.coordinate)
     }
 
-    LaunchedEffect(isAuthenticated, routineRepository) {
+    LaunchedEffect(isAuthenticated, routineReloadKey, routineRepository) {
         if (!isAuthenticated) return@LaunchedEffect
 
         routineUiState = routineUiState.copy(isLoading = true, errorMessage = null)
@@ -81,7 +87,6 @@ fun WarmingupApp(modifier: Modifier = Modifier) {
         modifier = modifier.fillMaxSize(),
     ) {
         composable(LoginRoute) {
-            val context = LocalContext.current
             val authRepository = remember(context) {
                 AuthRepository(NetworkModule.authApi(context))
             }
@@ -93,8 +98,26 @@ fun WarmingupApp(modifier: Modifier = Modifier) {
                 viewModel = loginViewModel,
                 onSignInClick = {
                     isAuthenticated = true
-                    navController.navigate(BottomTab.Now.route) {
+                    navController.navigate(RoutineSelectionRoute) {
                         popUpTo(LoginRoute) {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                    }
+                },
+            )
+        }
+        composable(RoutineSelectionRoute) {
+            val routineCreateViewModel: RoutineCreateViewModel = viewModel(
+                factory = RoutineCreateViewModel.factory(routineRepository),
+            )
+
+            RoutineSelectionScreen(
+                viewModel = routineCreateViewModel,
+                onRoutineCreated = {
+                    routineReloadKey += 1
+                    navController.navigate(BottomTab.Now.route) {
+                        popUpTo(RoutineSelectionRoute) {
                             inclusive = true
                         }
                         launchSingleTop = true
