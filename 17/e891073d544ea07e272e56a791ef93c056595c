@@ -1,0 +1,14 @@
+docs/PRD.md
+  h_3dcfd613e97439 1-269
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "17e891073d544ea07e272e56a791ef93c056595c",
+  "prompts": {},
+  "humans": {
+    "h_3dcfd613e97439": {
+      "author": "Mint <audwl03071@gmail.com>"
+    }
+  }
+}
