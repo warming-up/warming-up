@@ -1,0 +1,36 @@
+README.md
+  s_58768645866ec6::t_0e98fef561cf48 1-18
+.gitignore
+  h_3dcfd613e97439 1-186
+android/.gitkeep
+  s_58768645866ec6::t_0e98fef561cf48 1
+backend/build.gradle
+  s_58768645866ec6::t_e8eb6e7ea7d7ae 1-38
+backend/gradlew
+  s_58768645866ec6::t_1c7842a9c832dd 1-248
+backend/gradlew.bat
+  s_58768645866ec6::t_94bc4b704c91d9 1-82
+backend/settings.gradle
+  s_58768645866ec6::t_f8220aab7ce3f2 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "ae5d945a3302e6a0d301c5616200eae978ac7b12",
+  "prompts": {},
+  "humans": {
+    "h_3dcfd613e97439": {
+      "author": "Mint <audwl03071@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_58768645866ec6": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f4a59-a567-76d0-9522-0c109c063d5b",
+        "model": "gpt-5.5"
+      },
+      "human_author": null
+    }
+  }
+}
