@@ -1,0 +1,24 @@
+backend/build.gradle
+  s_45a769bd32a09d::t_2c7af2c4c3373f 23-24,29
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "fc8d52e7ab93b07e661841b156b82f29fc19de97",
+  "prompts": {},
+  "humans": {
+    "h_3dcfd613e97439": {
+      "author": "Mint <audwl03071@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_45a769bd32a09d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "1f16f233-fb78-441b-8d1c-4f9d15156bae",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Mint <audwl03071@gmail.com>"
+    }
+  }
+}
