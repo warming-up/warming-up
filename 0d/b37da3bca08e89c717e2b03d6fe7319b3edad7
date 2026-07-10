@@ -1,0 +1,39 @@
+.gitignore
+  s_58768645866ec6::t_19ca08ddad5d3c 8-11
+backend/src/main/resources/application.yaml
+  s_58768645866ec6::t_c41f2a38be65ec 4-12
+backend/docker-compose.yml
+  s_58768645866ec6::t_0cd0c778b74df9 2-18
+  s_58768645866ec6::t_beec7aa560ff9c 1,19-40
+backend/Dockerfile
+  s_58768645866ec6::t_0cd0c778b74df9 1-19
+backend/src/test/resources/application.yaml
+  s_58768645866ec6::t_c41f2a38be65ec 1-9
+README.md
+  s_58768645866ec6::t_d2446f2dda0f86 18
+  s_58768645866ec6::t_0419d2a253b818 12,16-17,20,22-23,26
+  s_58768645866ec6::t_c41f2a38be65ec 19,21,24-25
+backend/.dockerignore
+  s_58768645866ec6::t_0cd0c778b74df9 1-4
+backend/build.gradle
+  s_58768645866ec6::t_c41f2a38be65ec 32
+backend/.env.example
+  s_58768645866ec6::t_0cd0c778b74df9 6
+  s_58768645866ec6::t_c41f2a38be65ec 1-5,7-11
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "0db37da3bca08e89c717e2b03d6fe7319b3edad7",
+  "prompts": {},
+  "sessions": {
+    "s_58768645866ec6": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f4a59-a567-76d0-9522-0c109c063d5b",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Mint <audwl03071@gmail.com>"
+    }
+  }
+}
