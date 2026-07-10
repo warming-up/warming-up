@@ -26,6 +26,7 @@ private val HeaderLogoHeight = 40.dp
 @Composable
 fun WarmingupHeader(
     showReset: Boolean = true,
+    onResetClick: () -> Unit = {},
 ) {
     Box(
         modifier = Modifier
@@ -45,7 +46,7 @@ fun WarmingupHeader(
 
         if (showReset) {
             IconButton(
-                onClick = {},
+                onClick = onResetClick,
                 modifier = Modifier
                     .align(Alignment.CenterEnd)
                     .size(HeaderLogoHeight),

@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
@@ -43,18 +42,21 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.warming_up.data.appointment.Appointment
 import com.example.warming_up.data.routine.RoutineStepInput
 import com.example.warming_up.ui.component.WarmingupHeader
+import com.example.warming_up.ui.theme.WarmBackground
 import com.example.warming_up.ui.theme.WarmBlue
 import com.example.warming_up.ui.theme.WarmLine
 import com.example.warming_up.ui.theme.WarmSubText
 import com.example.warming_up.ui.theme.WarmText
 import com.example.warming_up.ui.theme.WarmingupTheme
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
-private val RoutineBackground = Color(0xFFF0EDE8)
 private val FieldBackground = Color.White
 private val MutedFieldBackground = Color(0xFFF8F4EF)
-private val ControlBackground = Color(0xFFE1EAFF)
 private val DeleteText = Color(0xFFBDB4A8)
 
 private data class EditableStep(
@@ -72,7 +74,7 @@ private data class EditableChecklistItem(
 fun RoutineSelectionScreen(
     modifier: Modifier = Modifier,
     viewModel: RoutineCreateViewModel? = null,
-    onRoutineCreated: () -> Unit = {},
+    onRoutineCreated: (Appointment?) -> Unit = {},
 ) {
     val uiState by viewModel?.uiState?.collectAsState()
         ?: remember { mutableStateOf(RoutineCreateUiState()) }
@@ -97,11 +99,15 @@ fun RoutineSelectionScreen(
     }
     var nextStepId by remember { mutableIntStateOf(5) }
     var nextChecklistId by remember { mutableIntStateOf(3) }
+    val defaultArrival = remember { Calendar.getInstance().apply { add(Calendar.MINUTE, 90) } }
+    var arrivalTime by rememberSaveable { mutableStateOf(defaultArrival.toTimeInput()) }
+    var travelMinutes by rememberSaveable { mutableIntStateOf(30) }
+    var bufferMinutes by rememberSaveable { mutableIntStateOf(10) }
     val totalMinutes = steps.sumOf { it.durationMinutes }
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
-        containerColor = RoutineBackground,
+        containerColor = WarmBackground,
         topBar = {
             WarmingupHeader(showReset = false)
         },
@@ -111,17 +117,24 @@ fun RoutineSelectionScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
                 .navigationBarsPadding(),
-            contentPadding = PaddingValues(start = 18.dp, end = 18.dp, top = 34.dp, bottom = 28.dp),
-            verticalArrangement = Arrangement.spacedBy(18.dp),
+            contentPadding = PaddingValues(
+                start = 18.dp,
+                end = 18.dp,
+                top = 8.dp,
+                bottom = 18.dp,
+            ),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             item {
                 RoutineIntro()
             }
 
             item {
-                RoutineNameSection(
+                AppointmentInfoSection(
                     routineName = routineName,
                     onRoutineNameChange = { routineName = it },
+                    arrivalTime = arrivalTime,
+                    onArrivalTimeChange = { arrivalTime = it },
                 )
             }
 
@@ -174,6 +187,15 @@ fun RoutineSelectionScreen(
             }
 
             item {
+                AppointmentScheduleSection(
+                    travelMinutes = travelMinutes,
+                    bufferMinutes = bufferMinutes,
+                    onTravelMinutesChange = { travelMinutes = it.coerceAtLeast(0) },
+                    onBufferMinutesChange = { bufferMinutes = it.coerceAtLeast(0) },
+                )
+            }
+
+            item {
                 SubmitSection(
                     isLoading = uiState.isLoading,
                     errorMessage = uiState.errorMessage,
@@ -187,8 +209,11 @@ fun RoutineSelectionScreen(
                                 )
                             },
                             checklist = checklist.map { it.name },
+                            arrivalTime = arrivalTime,
+                            travelMinutes = travelMinutes,
+                            bufferMinutes = bufferMinutes,
                             onSuccess = onRoutineCreated,
-                        ) ?: onRoutineCreated()
+                        ) ?: onRoutineCreated(null)
                     },
                 )
             }
@@ -197,36 +222,136 @@ fun RoutineSelectionScreen(
 }
 
 @Composable
+private fun AppointmentScheduleSection(
+    travelMinutes: Int,
+    bufferMinutes: Int,
+    onTravelMinutesChange: (Int) -> Unit,
+    onBufferMinutesChange: (Int) -> Unit,
+) {
+    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        SectionTitle(text = "이동 시간 / 여유 시간")
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(24.dp),
+            colors = CardDefaults.cardColors(containerColor = Color.White),
+            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        ) {
+            Column(
+                modifier = Modifier.padding(12.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp),
+            ) {
+                ScheduleTimeRow(
+                    title = "이동 시간",
+                    durationMinutes = travelMinutes,
+                    onDurationChange = onTravelMinutesChange,
+                )
+                ScheduleTimeRow(
+                    title = "여유 시간",
+                    durationMinutes = bufferMinutes,
+                    onDurationChange = onBufferMinutesChange,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun ScheduleTimeRow(
+    title: String,
+    durationMinutes: Int,
+    onDurationChange: (Int) -> Unit,
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text = title,
+            modifier = Modifier
+                .weight(1f)
+                .padding(start = 6.dp),
+            color = WarmText,
+            fontSize = 16.sp,
+            fontWeight = FontWeight.ExtraBold,
+        )
+        OutlinedTextField(
+            value = durationMinutes.toString(),
+            onValueChange = { text ->
+                text.filter { it.isDigit() }
+                    .take(3)
+                    .toIntOrNull()
+                    ?.let(onDurationChange)
+            },
+            modifier = Modifier
+                .width(86.dp)
+                .height(58.dp),
+            suffix = {
+                Text(
+                    text = "분",
+                    color = WarmSubText,
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                )
+            },
+            singleLine = true,
+            shape = RoundedCornerShape(14.dp),
+            textStyle = androidx.compose.ui.text.TextStyle(
+                color = WarmText,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.ExtraBold,
+            ),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            colors = routineTextFieldColors(containerColor = MutedFieldBackground),
+        )
+    }
+}
+
+@Composable
 private fun RoutineIntro() {
-    Column(verticalArrangement = Arrangement.spacedBy(22.dp)) {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Text(
             text = "오늘, 어떤 약속을\n준비할까요?",
             color = WarmText,
-            fontSize = 32.sp,
-            lineHeight = 40.sp,
+            fontSize = 24.sp,
+            lineHeight = 31.sp,
             fontWeight = FontWeight.ExtraBold,
         )
         Text(
             text = "약속을 선택하면 준비 시작 시간을 계산해드려요.",
             color = Color(0xFF92887D),
-            fontSize = 16.sp,
-            lineHeight = 23.sp,
+            fontSize = 13.sp,
+            lineHeight = 19.sp,
             fontWeight = FontWeight.SemiBold,
         )
     }
 }
 
 @Composable
-private fun RoutineNameSection(
+private fun AppointmentInfoSection(
     routineName: String,
     onRoutineNameChange: (String) -> Unit,
+    arrivalTime: String,
+    onArrivalTimeChange: (String) -> Unit,
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        SectionTitle(text = "약속")
+        SectionTitle(text = "일정")
         RoundedInput(
             value = routineName,
             onValueChange = onRoutineNameChange,
-            placeholder = "루틴 이름",
+            placeholder = "일정 이름",
+        )
+        RoundedInput(
+            value = arrivalTime,
+            onValueChange = onArrivalTimeChange,
+            placeholder = "도착 시간 (HH:mm)",
+        )
+        Text(
+            text = "오늘 일정의 도착 시간을 입력하면 준비 시작 시간이 계산됩니다.",
+            color = Color(0xFF92887D),
+            fontSize = 12.sp,
+            lineHeight = 17.sp,
+            fontWeight = FontWeight.SemiBold,
         )
     }
 }
@@ -269,11 +394,8 @@ private fun RoutineStepSection(
                     StepRow(
                         step = step,
                         onNameChange = { onStepNameChange(step.id, it) },
-                        onDurationMinus = {
-                            onStepDurationChange(step.id, step.durationMinutes - 1)
-                        },
-                        onDurationPlus = {
-                            onStepDurationChange(step.id, step.durationMinutes + 1)
+                        onDurationChange = { duration ->
+                            onStepDurationChange(step.id, duration)
                         },
                         onDelete = { onStepDelete(step.id) },
                     )
@@ -292,8 +414,7 @@ private fun RoutineStepSection(
 private fun StepRow(
     step: EditableStep,
     onNameChange: (String) -> Unit,
-    onDurationMinus: () -> Unit,
-    onDurationPlus: () -> Unit,
+    onDurationChange: (Int) -> Unit,
     onDelete: () -> Unit,
 ) {
     Row(
@@ -324,25 +445,36 @@ private fun StepRow(
             ),
             colors = routineTextFieldColors(containerColor = MutedFieldBackground),
         )
-        RoundControl(text = "-", onClick = onDurationMinus)
-        Text(
-            text = "${step.durationMinutes}분",
-            modifier = Modifier.width(42.dp),
-            color = WarmText,
-            fontSize = 16.sp,
-            fontWeight = FontWeight.ExtraBold,
-        )
-        RoundControl(text = "+", onClick = onDurationPlus)
-        Text(
-            text = "×",
+        OutlinedTextField(
+            value = step.durationMinutes.toString(),
+            onValueChange = { text ->
+                text.filter { it.isDigit() }
+                    .take(3)
+                    .toIntOrNull()
+                    ?.let(onDurationChange)
+            },
             modifier = Modifier
-                .size(32.dp)
-                .clickable(onClick = onDelete),
-            color = DeleteText,
-            fontSize = 32.sp,
-            lineHeight = 32.sp,
-            fontWeight = FontWeight.Light,
+                .width(86.dp)
+                .height(58.dp),
+            suffix = {
+                Text(
+                    text = "분",
+                    color = WarmSubText,
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                )
+            },
+            singleLine = true,
+            shape = RoundedCornerShape(14.dp),
+            textStyle = androidx.compose.ui.text.TextStyle(
+                color = WarmText,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.ExtraBold,
+            ),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            colors = routineTextFieldColors(containerColor = MutedFieldBackground),
         )
+        DeleteRowButton(onClick = onDelete)
     }
 }
 
@@ -399,15 +531,25 @@ private fun ChecklistRow(
             placeholder = "준비물 이름",
             modifier = Modifier.weight(1f),
             containerColor = MutedFieldBackground,
+            height = 58.dp,
         )
+        DeleteRowButton(onClick = onDelete)
+    }
+}
+
+@Composable
+private fun DeleteRowButton(onClick: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .size(32.dp)
+            .clickable(onClick = onClick),
+        contentAlignment = Alignment.Center,
+    ) {
         Text(
             text = "×",
-            modifier = Modifier
-                .size(32.dp)
-                .clickable(onClick = onDelete),
             color = DeleteText,
-            fontSize = 32.sp,
-            lineHeight = 32.sp,
+            fontSize = 24.sp,
+            lineHeight = 24.sp,
             fontWeight = FontWeight.Light,
         )
     }
@@ -432,7 +574,7 @@ private fun SubmitSection(
             elevation = ButtonDefaults.buttonElevation(defaultElevation = 2.dp),
         ) {
             Text(
-                text = if (isLoading) "루틴 생성 중..." else "루틴 생성하기",
+                text = if (isLoading) "약속 생성 중..." else "루틴과 약속 생성하기",
                 color = Color.White,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.ExtraBold,
@@ -468,13 +610,15 @@ private fun RoundedInput(
     placeholder: String,
     modifier: Modifier = Modifier,
     containerColor: Color = FieldBackground,
+    keyboardType: KeyboardType = KeyboardType.Text,
+    height: androidx.compose.ui.unit.Dp = 72.dp,
 ) {
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
         modifier = modifier
             .fillMaxWidth()
-            .height(72.dp),
+            .height(height),
         placeholder = {
             Text(
                 text = placeholder,
@@ -490,36 +634,9 @@ private fun RoundedInput(
             fontSize = 18.sp,
             fontWeight = FontWeight.ExtraBold,
         ),
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+        keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
         colors = routineTextFieldColors(containerColor),
     )
-}
-
-@Composable
-private fun RoundControl(
-    text: String,
-    onClick: () -> Unit,
-) {
-    Surface(
-        modifier = Modifier
-            .size(44.dp)
-            .clickable(onClick = onClick),
-        color = ControlBackground,
-        shape = CircleShape,
-    ) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center,
-        ) {
-            Text(
-                text = text,
-                color = WarmBlue,
-                fontSize = 26.sp,
-                lineHeight = 32.sp,
-                fontWeight = FontWeight.ExtraBold,
-            )
-        }
-    }
 }
 
 @Composable
@@ -560,6 +677,12 @@ private fun routineTextFieldColors(containerColor: Color) = OutlinedTextFieldDef
     focusedTextColor = WarmText,
     unfocusedTextColor = WarmText,
 )
+
+private fun Calendar.toTimeInput(): String {
+    val roundedMinute = (get(Calendar.MINUTE) / 10) * 10
+    set(Calendar.MINUTE, roundedMinute)
+    return SimpleDateFormat("HH:mm", Locale.US).format(time)
+}
 
 @Preview(showBackground = true, widthDp = 393, heightDp = 852)
 @Composable

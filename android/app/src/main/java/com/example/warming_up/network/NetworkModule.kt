@@ -14,6 +14,9 @@ object NetworkModule {
     @Volatile
     private var routineApi: RoutineApi? = null
 
+    @Volatile
+    private var appointmentApi: AppointmentApi? = null
+
     fun authApi(context: Context): AuthApi {
         return authApi ?: synchronized(this) {
             authApi ?: buildApi(context.applicationContext, AuthApi::class.java)
@@ -25,6 +28,13 @@ object NetworkModule {
         return routineApi ?: synchronized(this) {
             routineApi ?: buildApi(context.applicationContext, RoutineApi::class.java)
                 .also { routineApi = it }
+        }
+    }
+
+    fun appointmentApi(context: Context): AppointmentApi {
+        return appointmentApi ?: synchronized(this) {
+            appointmentApi ?: buildApi(context.applicationContext, AppointmentApi::class.java)
+                .also { appointmentApi = it }
         }
     }
 

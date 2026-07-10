@@ -2,8 +2,9 @@ package com.example.warming_up.ui.login
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -64,30 +65,31 @@ fun LoginScreen(
     val uiState by viewModel?.uiState?.collectAsState()
         ?: remember { mutableStateOf(LoginUiState()) }
 
-    Box(
+    Column(
         modifier = modifier
             .fillMaxSize()
             .background(WarmBackground)
             .windowInsetsPadding(WindowInsets.safeDrawing)
             .imePadding()
             .navigationBarsPadding()
-            .padding(horizontal = 18.dp),
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 18.dp, vertical = 24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Image(
             painter = painterResource(R.drawable.logo),
             contentDescription = "Warm Up",
             modifier = Modifier
-                .align(Alignment.TopCenter)
-                .padding(top = 70.dp)
+                .padding(top = 46.dp)
                 .width(188.dp)
                 .height(60.dp),
             contentScale = ContentScale.Fit,
         )
 
+        Spacer(modifier = Modifier.height(108.dp))
+
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.Center),
+            modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(5.dp),
         ) {
             LoginFieldLabel(text = "아이디")

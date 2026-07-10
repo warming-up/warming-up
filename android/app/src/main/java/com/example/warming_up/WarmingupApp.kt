@@ -21,6 +21,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.warming_up.data.appointment.Appointment
+import com.example.warming_up.data.appointment.AppointmentRepository
 import com.example.warming_up.data.auth.AuthRepository
 import com.example.warming_up.data.route.DESTINATION_PRESETS
 import com.example.warming_up.data.routine.Routine
@@ -47,8 +49,12 @@ fun WarmingupApp(modifier: Modifier = Modifier) {
     val routineRepository = remember(context) {
         RoutineRepository(NetworkModule.routineApi(context))
     }
+    val appointmentRepository = remember(context) {
+        AppointmentRepository(NetworkModule.appointmentApi(context))
+    }
     val routeEtaViewModel: RouteEtaViewModel = viewModel()
     var routineUiState by remember { mutableStateOf(RoutineUiState()) }
+    var currentAppointment by remember { mutableStateOf<Appointment?>(null) }
     var destination by remember { mutableStateOf(DESTINATION_PRESETS.first()) }
     var showDestinationPicker by remember { mutableStateOf(false) }
     var isAuthenticated by remember { mutableStateOf(false) }
@@ -59,6 +65,15 @@ fun WarmingupApp(modifier: Modifier = Modifier) {
         val granted = permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true ||
             permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true
         routeEtaViewModel.onPermissionResult(granted, destination.coordinate)
+    }
+    val navigateToRoutineSelection = {
+        currentAppointment = null
+        navController.navigate(RoutineSelectionRoute) {
+            popUpTo(BottomTab.Now.route) {
+                inclusive = true
+            }
+            launchSingleTop = true
+        }
     }
 
     LaunchedEffect(isAuthenticated, routineReloadKey, routineRepository) {
@@ -109,12 +124,16 @@ fun WarmingupApp(modifier: Modifier = Modifier) {
         }
         composable(RoutineSelectionRoute) {
             val routineCreateViewModel: RoutineCreateViewModel = viewModel(
-                factory = RoutineCreateViewModel.factory(routineRepository),
+                factory = RoutineCreateViewModel.factory(
+                    routineRepository = routineRepository,
+                    appointmentRepository = appointmentRepository,
+                ),
             )
 
             RoutineSelectionScreen(
                 viewModel = routineCreateViewModel,
-                onRoutineCreated = {
+                onRoutineCreated = { appointment ->
+                    currentAppointment = appointment
                     routineReloadKey += 1
                     navController.navigate(BottomTab.Now.route) {
                         popUpTo(RoutineSelectionRoute) {
@@ -128,6 +147,7 @@ fun WarmingupApp(modifier: Modifier = Modifier) {
         composable(BottomTab.Now.route) {
             PreparationScreen(
                 routine = routineUiState.currentRoutine,
+                appointment = currentAppointment,
                 isLoading = routineUiState.isLoading,
                 errorMessage = routineUiState.errorMessage,
                 destinationName = destination.name,
@@ -140,14 +160,17 @@ fun WarmingupApp(modifier: Modifier = Modifier) {
                     }
                 },
                 onDestinationClick = { showDestinationPicker = true },
+                onResetClick = navigateToRoutineSelection,
                 onTabClick = { tab -> navController.navigateToTab(tab) },
             )
         }
         composable(BottomTab.Supplies.route) {
             SuppliesScreen(
                 routine = routineUiState.currentRoutine,
+                appointment = currentAppointment,
                 isLoading = routineUiState.isLoading,
                 errorMessage = routineUiState.errorMessage,
+                onResetClick = navigateToRoutineSelection,
                 onTabClick = { tab -> navController.navigateToTab(tab) },
             )
         }

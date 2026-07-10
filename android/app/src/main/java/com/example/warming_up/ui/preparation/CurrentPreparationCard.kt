@@ -1,7 +1,7 @@
 package com.example.warming_up.ui.preparation
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -22,20 +21,27 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.warming_up.data.routine.Routine
 import com.example.warming_up.ui.component.StatusChip
 import com.example.warming_up.ui.theme.WarmBlue
 import com.example.warming_up.ui.theme.WarmBlueDark
 import com.example.warming_up.ui.theme.WarmingupTheme
 
 @Composable
-fun CurrentPreparationCard(routine: Routine? = null) {
-    val currentStep = routine?.steps?.firstOrNull()
-    val nextStep = routine?.steps?.drop(1)?.firstOrNull()
+fun CurrentPreparationCard(
+    stepName: String,
+    remainingSeconds: Int,
+    progressFraction: Float,
+    nextStepName: String?,
+    isCompleteEnabled: Boolean,
+    onCompleteClick: () -> Unit,
+) {
+    val statusText = if (isCompleteEnabled) "진행 중" else "완료"
 
     Box(
         modifier = Modifier
@@ -62,18 +68,20 @@ fun CurrentPreparationCard(routine: Routine? = null) {
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Bold,
                 )
-                StatusChip(text = "진행 중")
+                StatusChip(text = statusText)
             }
 
             Spacer(modifier = Modifier.height(10.dp))
             CircularStepTimer(
-                stepName = currentStep?.name ?: routine?.name ?: "루틴 없음",
-                remainingTimeText = currentStep?.durationMinutes?.toTimerText() ?: "0:00",
+                stepName = stepName,
+                remainingTimeText = remainingSeconds.toTimerText(),
+                progressFraction = progressFraction,
             )
             Spacer(modifier = Modifier.height(16.dp))
 
             Button(
-                onClick = {},
+                onClick = onCompleteClick,
+                enabled = isCompleteEnabled,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp),
@@ -91,7 +99,7 @@ fun CurrentPreparationCard(routine: Routine? = null) {
 
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = nextStep?.let { "다음 · ${it.name}" } ?: "다음 단계 없음",
+                text = nextStepName?.let { "다음 · $it" } ?: "다음 단계 없음",
                 color = Color.White.copy(alpha = 0.9f),
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Bold,
@@ -104,7 +112,14 @@ fun CurrentPreparationCard(routine: Routine? = null) {
 @Composable
 private fun CurrentPreparationCardPreview() {
     WarmingupTheme {
-        CurrentPreparationCard()
+        CurrentPreparationCard(
+            stepName = "샤워하기",
+            remainingSeconds = 300,
+            progressFraction = 0.7f,
+            nextStepName = "옷 입기",
+            isCompleteEnabled = true,
+            onCompleteClick = {},
+        )
     }
 }
 
@@ -112,27 +127,37 @@ private fun CurrentPreparationCardPreview() {
 private fun CircularStepTimer(
     stepName: String,
     remainingTimeText: String,
+    progressFraction: Float,
 ) {
+    val boundedProgress = progressFraction.coerceIn(0f, 1f)
+    val strokeWidth = 11.dp
+
     Box(
         modifier = Modifier
-            .size(174.dp)
-            .border(
-                width = 11.dp,
-                color = Color.White.copy(alpha = 0.22f),
-                shape = CircleShape,
-            )
-            .border(
-                width = 11.dp,
-                brush = Brush.sweepGradient(
-                    0.0f to Color.White,
-                    0.72f to Color.White,
-                    0.73f to Color.Transparent,
-                    1.0f to Color.Transparent,
-                ),
-                shape = CircleShape,
-            ),
+            .size(174.dp),
         contentAlignment = Alignment.Center,
     ) {
+        Canvas(modifier = Modifier.size(174.dp)) {
+            val stroke = Stroke(
+                width = strokeWidth.toPx(),
+                cap = StrokeCap.Round,
+            )
+            drawArc(
+                color = Color.White.copy(alpha = 0.22f),
+                startAngle = 0f,
+                sweepAngle = 360f,
+                useCenter = false,
+                style = stroke,
+            )
+            drawArc(
+                color = Color.White,
+                startAngle = -90f,
+                sweepAngle = -360f * boundedProgress,
+                useCenter = false,
+                style = stroke,
+            )
+        }
+
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
                 text = stepName,
@@ -156,4 +181,9 @@ private fun CircularStepTimer(
     }
 }
 
-private fun Int.toTimerText(): String = "$this:00"
+internal fun Int.toTimerText(): String {
+    val safeSeconds = coerceAtLeast(0)
+    val minutes = safeSeconds / 60
+    val seconds = safeSeconds % 60
+    return "$minutes:${seconds.toString().padStart(2, '0')}"
+}

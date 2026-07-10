@@ -26,7 +26,7 @@ class RoutineRepository(
         name: String,
         steps: List<RoutineStepInput>,
         checklist: List<String>,
-    ): Result<RoutineResponse> {
+    ): Result<Routine> {
         return runCatching {
             val request = RoutineCreateRequest(
                 name = name,
@@ -45,7 +45,7 @@ class RoutineRepository(
                 throw RoutineCreateException(response.code())
             }
 
-            response.body() ?: throw IOException("Routine create response body is empty.")
+            response.body()?.toRoutine() ?: throw IOException("Routine create response body is empty.")
         }
     }
 }
