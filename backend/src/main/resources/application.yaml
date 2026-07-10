@@ -20,3 +20,6 @@ google:
     routes:
       api-key: ${GOOGLE_MAPS_API_KEY:}
       base-url: ${GOOGLE_MAPS_ROUTES_BASE_URL:https://routes.googleapis.com}
+    geocoding:
+      api-key: ${GOOGLE_MAPS_API_KEY:}
+      base-url: ${GOOGLE_MAPS_GEOCODING_BASE_URL:https://maps.googleapis.com}
