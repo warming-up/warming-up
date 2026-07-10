@@ -1,0 +1,29 @@
+backend/src/main/java/com/warmingup/backend/appointment/controller/AppointmentController.java
+  s_75d42ec4a069eb::t_648d0e6d8ede39 15,44-52
+  s_75d42ec4a069eb::t_1748a192c2e6ff 53-54
+backend/src/test/java/com/warmingup/backend/appointment/controller/AppointmentControllerTest.java
+  s_75d42ec4a069eb::t_75c892fbad2b8f 149-205
+backend/src/main/java/com/warmingup/backend/appointment/repository/AppointmentItemRepository.java
+  s_75d42ec4a069eb::t_648d0e6d8ede39 6-7,9-14
+backend/src/test/java/com/warmingup/backend/appointment/service/AppointmentServiceTest.java
+  s_75d42ec4a069eb::t_fbca64cdc8021a 171-226
+backend/src/main/java/com/warmingup/backend/appointment/service/AppointmentService.java
+  s_75d42ec4a069eb::t_648d0e6d8ede39 5,31,76-81
+  s_75d42ec4a069eb::t_fe25598d7ca385 82-83
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "75a9b3f2e2f5b72b364b16fc081ae4ebc1404e78",
+  "prompts": {},
+  "sessions": {
+    "s_75d42ec4a069eb": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f4aa6-dffe-7b41-830e-a4c3f64b55ca",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Mint <audwl03071@gmail.com>"
+    }
+  }
+}
