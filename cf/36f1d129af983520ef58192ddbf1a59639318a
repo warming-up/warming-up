@@ -1,0 +1,37 @@
+backend/src/main/java/com/warmingup/backend/geocode/GeocodeService.java
+  s_24ea44a3aa4f37::t_636e0609546121 1-24
+backend/src/main/resources/application.yaml
+  s_24ea44a3aa4f37::t_5928c25fb3506b 23-25
+backend/src/main/java/com/warmingup/backend/geocode/dto/GeocodeResponse.java
+  s_24ea44a3aa4f37::t_3bd136c3a6a440 1-8
+backend/src/main/java/com/warmingup/backend/geocode/client/GoogleGeocodeResult.java
+  s_24ea44a3aa4f37::t_4a2704d1002a00 1-8
+backend/src/main/java/com/warmingup/backend/geocode/client/GoogleGeocodingClient.java
+  s_24ea44a3aa4f37::t_9c8dc910a72568 1-6
+backend/src/main/java/com/warmingup/backend/geocode/client/GoogleGeocodingRestClient.java
+  s_24ea44a3aa4f37::t_52fda6d0957a17 1-83
+backend/src/main/java/com/warmingup/backend/geocode/GeocodeController.java
+  s_24ea44a3aa4f37::t_5c5d0103e93a94 10,19
+  s_24ea44a3aa4f37::t_4439b681cd81bc 1-9,11-18,20-35
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "cf36f1d129af983520ef58192ddbf1a59639318a",
+  "prompts": {},
+  "humans": {
+    "h_3dcfd613e97439": {
+      "author": "Mint <audwl03071@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_24ea44a3aa4f37": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7675c60e-19d1-4530-b744-a585e0fe172a",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Mint <audwl03071@gmail.com>"
+    }
+  }
+}
