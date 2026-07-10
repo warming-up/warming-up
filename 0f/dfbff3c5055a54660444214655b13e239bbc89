@@ -1,0 +1,25 @@
+backend/src/main/java/com/warmingup/backend/appointment/support/AppointmentTimeCalculation.java
+  s_75d42ec4a069eb::t_9f2950710417a8 1-11
+backend/src/main/java/com/warmingup/backend/appointment/support/AppointmentTimeCalculator.java
+  s_75d42ec4a069eb::t_127d1ab5b94f3f 1-58
+backend/src/main/java/com/warmingup/backend/appointment/support/StepTimeline.java
+  s_75d42ec4a069eb::t_58b93f7f07e8e3 1-10
+backend/src/test/java/com/warmingup/backend/appointment/support/AppointmentTimeCalculatorTest.java
+  s_75d42ec4a069eb::t_81a0bd2ec25742 1-65
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "0fdfbff3c5055a54660444214655b13e239bbc89",
+  "prompts": {},
+  "sessions": {
+    "s_75d42ec4a069eb": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f4aa6-dffe-7b41-830e-a4c3f64b55ca",
+        "model": "unknown"
+      },
+      "human_author": "Mint <audwl03071@gmail.com>"
+    }
+  }
+}
