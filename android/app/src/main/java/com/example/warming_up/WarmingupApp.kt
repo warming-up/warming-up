@@ -26,10 +26,13 @@ import com.example.warming_up.data.routine.Routine
 import com.example.warming_up.data.routine.RoutineApiException
 import com.example.warming_up.data.routine.RoutineRepository
 import com.example.warming_up.navigation.BottomTab
+import com.example.warming_up.ui.login.LoginScreen
 import com.example.warming_up.ui.preparation.DestinationPickerDialog
 import com.example.warming_up.ui.preparation.PreparationScreen
 import com.example.warming_up.ui.route.RouteEtaViewModel
 import com.example.warming_up.ui.supplies.SuppliesScreen
+
+private const val LoginRoute = "login"
 
 @Composable
 fun WarmingupApp(modifier: Modifier = Modifier) {
@@ -68,9 +71,21 @@ fun WarmingupApp(modifier: Modifier = Modifier) {
 
     NavHost(
         navController = navController,
-        startDestination = BottomTab.Now.route,
+        startDestination = LoginRoute,
         modifier = modifier.fillMaxSize(),
     ) {
+        composable(LoginRoute) {
+            LoginScreen(
+                onSignInClick = {
+                    navController.navigate(BottomTab.Now.route) {
+                        popUpTo(LoginRoute) {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                    }
+                },
+            )
+        }
         composable(BottomTab.Now.route) {
             PreparationScreen(
                 routine = routineUiState.currentRoutine,
