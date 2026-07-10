@@ -1,0 +1,26 @@
+backend/src/main/resources/application.yaml
+  s_59557e8554b04a::t_9007e88b49d4e8 16
+backend/src/main/java/com/warmingup/backend/config/SwaggerConfig.java
+  s_59557e8554b04a::t_9007e88b49d4e8 6,9,16-18,30-32
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "821716daa8f0cff1eab50d3876218b8193e974f4",
+  "prompts": {},
+  "humans": {
+    "h_3dcfd613e97439": {
+      "author": "Mint <audwl03071@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_59557e8554b04a": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f4acd-5bec-7660-b4ec-cd1049475d66",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Mint <audwl03071@gmail.com>"
+    }
+  }
+}
