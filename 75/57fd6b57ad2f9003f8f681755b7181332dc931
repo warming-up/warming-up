@@ -1,0 +1,55 @@
+backend/src/main/resources/application.yaml
+  s_a3dad65edf824d::t_2a41de84044247 17-22
+backend/src/main/java/com/warmingup/backend/route/client/GoogleRouteEta.java
+  s_a3dad65edf824d::t_2a41de84044247 1-7
+backend/src/main/java/com/warmingup/backend/route/RouteController.java
+  s_a3dad65edf824d::t_2a41de84044247 1-34
+backend/src/test/java/com/warmingup/backend/route/RouteServiceTest.java
+  s_a3dad65edf824d::t_2a41de84044247 1-56
+backend/ROUTES_API_DESIGN.md
+  s_a3dad65edf824d::t_2a41de84044247 1-127
+backend/src/main/java/com/warmingup/backend/route/RouteService.java
+  s_a3dad65edf824d::t_2a41de84044247 1-9,12-46,48-49
+  s_a3dad65edf824d::t_f7ddca528ed21f 10-11,47
+backend/src/main/java/com/warmingup/backend/route/dto/RouteEtaRequest.java
+  s_a3dad65edf824d::t_2a41de84044247 1-15
+backend/src/main/java/com/warmingup/backend/config/AppConfig.java
+  s_a3dad65edf824d::t_06db1b6f4d04d1 6,15-18
+  s_a3dad65edf824d::t_99a544289acbc0 19
+backend/API_SPEC.md
+  s_a3dad65edf824d::t_99e0fcb10a4f95 3,27
+  s_a3dad65edf824d::t_b6dc3dd89ba50c 385-451
+backend/src/main/java/com/warmingup/backend/route/dto/RouteEtaResponse.java
+  s_a3dad65edf824d::t_2a41de84044247 1-9
+backend/.env.example
+  s_a3dad65edf824d::t_2a41de84044247 13-17
+backend/src/main/java/com/warmingup/backend/route/client/GoogleRoutesRestClient.java
+  s_a3dad65edf824d::t_f9a2109196e599 9,40-52
+  s_a3dad65edf824d::t_5857c4e7c53ba3 27-28
+  s_a3dad65edf824d::t_2a41de84044247 1-8,10-26,29-39,53-109
+backend/src/main/java/com/warmingup/backend/route/dto/CoordinateRequest.java
+  s_a3dad65edf824d::t_2a41de84044247 1-18
+backend/src/main/java/com/warmingup/backend/route/client/GoogleRoutesClient.java
+  s_a3dad65edf824d::t_2a41de84044247 1-8
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "7557fd6b57ad2f9003f8f681755b7181332dc931",
+  "prompts": {},
+  "humans": {
+    "h_3dcfd613e97439": {
+      "author": "Mint <audwl03071@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_a3dad65edf824d": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f4b00-503d-7920-9141-ee809281bdaf",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Mint <audwl03071@gmail.com>"
+    }
+  }
+}
