@@ -206,10 +206,190 @@ class AppointmentControllerTest {
         );
     }
 
+    @Test
+    void rejectsUnauthenticatedCreateAsUnauthorized() throws Exception {
+        HttpClient client = HttpClient.newHttpClient();
+        AppointmentCreateRequest request = new AppointmentCreateRequest(
+                null,
+                "약속",
+                LocalDateTime.of(2026, 7, 10, 18, 0),
+                40,
+                10
+        );
+
+        HttpResponse<String> response = client.send(
+                jsonPost("/api/appointments", request).build(),
+                HttpResponse.BodyHandlers.ofString()
+        );
+
+        assertThat(response.statusCode()).isEqualTo(401);
+    }
+
+    @Test
+    void rejectsInvalidCreateRequestsAsBadRequest() throws Exception {
+        User user = saveLoginUser("appointment-controller-invalid-user@example.com");
+        HttpClient client = HttpClient.newHttpClient();
+        String cookie = loginCookie(client, user);
+
+        HttpResponse<String> blankName = client.send(
+                jsonPost("/api/appointments", new AppointmentCreateRequest(
+                        null,
+                        " ",
+                        LocalDateTime.of(2026, 7, 10, 18, 0),
+                        40,
+                        10
+                ))
+                        .header("Cookie", cookie)
+                        .build(),
+                HttpResponse.BodyHandlers.ofString()
+        );
+        HttpResponse<String> nullArrivalTime = client.send(
+                jsonPost("/api/appointments", new AppointmentCreateRequest(
+                        null,
+                        "약속",
+                        null,
+                        40,
+                        10
+                ))
+                        .header("Cookie", cookie)
+                        .build(),
+                HttpResponse.BodyHandlers.ofString()
+        );
+        HttpResponse<String> negativeTravelMinutes = client.send(
+                jsonPost("/api/appointments", new AppointmentCreateRequest(
+                        null,
+                        "약속",
+                        LocalDateTime.of(2026, 7, 10, 18, 0),
+                        -1,
+                        10
+                ))
+                        .header("Cookie", cookie)
+                        .build(),
+                HttpResponse.BodyHandlers.ofString()
+        );
+        HttpResponse<String> negativeBufferMinutes = client.send(
+                jsonPost("/api/appointments", new AppointmentCreateRequest(
+                        null,
+                        "약속",
+                        LocalDateTime.of(2026, 7, 10, 18, 0),
+                        40,
+                        -1
+                ))
+                        .header("Cookie", cookie)
+                        .build(),
+                HttpResponse.BodyHandlers.ofString()
+        );
+
+        assertAll(
+                () -> assertThat(blankName.statusCode()).isEqualTo(400),
+                () -> assertThat(nullArrivalTime.statusCode()).isEqualTo(400),
+                () -> assertThat(negativeTravelMinutes.statusCode()).isEqualTo(400),
+                () -> assertThat(negativeBufferMinutes.statusCode()).isEqualTo(400)
+        );
+    }
+
+    @Test
+    void hidesOtherUsersResourcesAsNotFound() throws Exception {
+        User owner = saveLoginUser("appointment-controller-owner@example.com");
+        User other = saveLoginUser("appointment-controller-other@example.com");
+        Routine ownerRoutine = saveRoutineWithItems(owner);
+        HttpClient client = HttpClient.newHttpClient();
+        String ownerCookie = loginCookie(client, owner);
+        String otherCookie = loginCookie(client, other);
+        AppointmentCreateRequest ownerRequest = new AppointmentCreateRequest(
+                ownerRoutine.getId(),
+                "토스 면접",
+                LocalDateTime.of(2026, 7, 10, 18, 0),
+                40,
+                10
+        );
+        AppointmentResponse created = objectMapper.readValue(client.send(
+                jsonPost("/api/appointments", ownerRequest)
+                        .header("Cookie", ownerCookie)
+                        .build(),
+                HttpResponse.BodyHandlers.ofString()
+        ).body(), AppointmentResponse.class);
+
+        HttpResponse<String> createWithOtherUsersRoutine = client.send(
+                jsonPost("/api/appointments", ownerRequest)
+                        .header("Cookie", otherCookie)
+                        .build(),
+                HttpResponse.BodyHandlers.ofString()
+        );
+        HttpResponse<String> getOtherUsersAppointment = client.send(
+                HttpRequest.newBuilder(URI.create("http://localhost:" + port + "/api/appointments/" + created.id()))
+                        .header("Cookie", otherCookie)
+                        .GET()
+                        .build(),
+                HttpResponse.BodyHandlers.ofString()
+        );
+        HttpResponse<String> completeOtherUsersItem = client.send(
+                HttpRequest.newBuilder(URI.create("http://localhost:" + port
+                                + "/api/appointments/" + created.id()
+                                + "/items/" + created.steps().get(0).id()
+                                + "/complete"))
+                        .header("Cookie", otherCookie)
+                        .method("PATCH", HttpRequest.BodyPublishers.noBody())
+                        .build(),
+                HttpResponse.BodyHandlers.ofString()
+        );
+
+        assertAll(
+                () -> assertThat(createWithOtherUsersRoutine.statusCode()).isEqualTo(404),
+                () -> assertThat(getOtherUsersAppointment.statusCode()).isEqualTo(404),
+                () -> assertThat(completeOtherUsersItem.statusCode()).isEqualTo(404)
+        );
+    }
+
+    @Test
+    void rejectsMissingAppointmentAndItemAsNotFound() throws Exception {
+        User user = saveLoginUser("appointment-controller-missing-user@example.com");
+        HttpClient client = HttpClient.newHttpClient();
+        String cookie = loginCookie(client, user);
+
+        HttpResponse<String> missingAppointment = client.send(
+                HttpRequest.newBuilder(URI.create("http://localhost:" + port + "/api/appointments/999999"))
+                        .header("Cookie", cookie)
+                        .GET()
+                        .build(),
+                HttpResponse.BodyHandlers.ofString()
+        );
+        HttpResponse<String> missingItem = client.send(
+                HttpRequest.newBuilder(URI.create("http://localhost:" + port
+                                + "/api/appointments/999999/items/999999/complete"))
+                        .header("Cookie", cookie)
+                        .method("PATCH", HttpRequest.BodyPublishers.noBody())
+                        .build(),
+                HttpResponse.BodyHandlers.ofString()
+        );
+
+        assertAll(
+                () -> assertThat(missingAppointment.statusCode()).isEqualTo(404),
+                () -> assertThat(missingItem.statusCode()).isEqualTo(404)
+        );
+    }
+
     private HttpRequest.Builder jsonPost(String path, Object body) throws Exception {
         return HttpRequest.newBuilder(URI.create("http://localhost:" + port + path))
                 .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
                 .POST(HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(body)));
+    }
+
+    private User saveLoginUser(String email) {
+        return userRepository.save(User.builder()
+                .email(email)
+                .password(passwordEncoder.encode("password"))
+                .build());
+    }
+
+    private String loginCookie(HttpClient client, User user) throws Exception {
+        return client.send(
+                        jsonPost("/api/auth/login", new LoginRequest(user.getEmail(), "password")).build(),
+                        HttpResponse.BodyHandlers.ofString()
+                )
+                .headers()
+                .firstValue("set-cookie")
+                .orElseThrow();
     }
 
     private Routine saveRoutineWithItems(User user) {
