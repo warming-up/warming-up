@@ -1,0 +1,27 @@
+backend/src/main/resources/application.yaml
+  s_59557e8554b04a::t_9c26fc8cc8e369 13-15
+backend/railway.toml
+  s_59557e8554b04a::t_9c26fc8cc8e369 1-9
+backend/RAILWAY_DEPLOYMENT.md
+  s_59557e8554b04a::t_b9f7e538c44cac 1-34
+backend/.env.example
+  s_59557e8554b04a::t_14b0929a3ecceb 7
+backend/src/main/java/com/warmingup/backend/health/HealthController.java
+  s_59557e8554b04a::t_9c26fc8cc8e369 1-15
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "916e1443f86d3e098e394f3d299de89288d6f089",
+  "prompts": {},
+  "sessions": {
+    "s_59557e8554b04a": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f4acd-5bec-7660-b4ec-cd1049475d66",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Mint <audwl03071@gmail.com>"
+    }
+  }
+}
