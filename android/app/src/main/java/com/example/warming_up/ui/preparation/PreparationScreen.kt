@@ -20,6 +20,7 @@ import com.example.warming_up.ui.component.WarmingupHeader
 import com.example.warming_up.ui.theme.WarmBackground
 import com.example.warming_up.ui.theme.WarmSubText
 import com.example.warming_up.ui.theme.WarmingupTheme
+import com.example.warming_up.ui.route.RouteEtaUiState
 
 @Composable
 fun PreparationScreen(
@@ -27,6 +28,10 @@ fun PreparationScreen(
     routine: Routine? = null,
     isLoading: Boolean = false,
     errorMessage: String? = null,
+    destinationName: String = "강남 오피스",
+    routeEtaUiState: RouteEtaUiState = RouteEtaUiState(),
+    onRequestRouteEta: () -> Unit = {},
+    onDestinationClick: () -> Unit = {},
     onTabClick: (BottomTab) -> Unit = {},
 ) {
     Scaffold(
@@ -66,7 +71,14 @@ fun PreparationScreen(
                     totalStepCount = routine?.steps?.size ?: 0,
                 )
             }
-            item { DestinationSummaryCard() }
+            item {
+                DestinationSummaryCard(
+                    destinationName = destinationName,
+                    routeEtaUiState = routeEtaUiState,
+                    onRequestRouteEta = onRequestRouteEta,
+                    onDestinationClick = onDestinationClick,
+                )
+            }
             item { PreparationStepSection(steps = routine?.steps.orEmpty()) }
         }
     }
