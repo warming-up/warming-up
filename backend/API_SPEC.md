@@ -1,6 +1,6 @@
 # API 명세서
 
-작성 기준: 현재 구현된 컨트롤러 3개 (`AuthController`, `RoutineController`, `AppointmentController`)
+작성 기준: 현재 구현된 컨트롤러 4개 (`AuthController`, `RoutineController`, `AppointmentController`, `RouteController`)
 
 ## 공통 사항
 
@@ -24,6 +24,7 @@
 | 로그아웃 | ✗ (세션 있으면 무효화) |
 | 루틴 관련 전체 | ✓ |
 | 약속 관련 전체 | ✓ |
+| 이동시간 계산 | ✓ |
 
 ---
 
@@ -66,8 +67,6 @@ POST /api/auth/join
   "email": "user@example.com"
 }
 ```
-
----
 
 ### 1-2. 로그인
 
@@ -380,6 +379,73 @@ PATCH /api/appointments/{appointmentId}/items/{itemId}/complete
 **요청 Body**: 없음
 
 **응답**: `200 OK` (본문 없음)
+
+---
+
+## 4. Route API (`/api/routes`)
+
+Google Maps Platform Routes API의 Compute Routes를 이용해 현재 위치와 도착지 사이의 자동차 기준 예상 이동시간과 거리를 계산한다. **모든 API는 로그인 필요.**
+
+실제 Google API 키는 저장소에 커밋하지 않고 환경변수 `GOOGLE_MAPS_API_KEY`에 설정한다. 예시는 `.env.example`과 `ROUTES_API_DESIGN.md`를 참고한다.
+
+### 4-1. 이동시간 계산
+
+```
+POST /api/routes/eta
+```
+
+**설명**: 안드로이드 앱이 현재 위치와 도착지 좌표를 보내면, 백엔드가 Google Routes API를 호출해 실시간 교통을 반영한 예상 이동시간을 반환한다.
+
+**요청 Body**
+
+| 필드 | 타입 | 필수 | 설명 |
+|---|---|---|---|
+| origin | object | ✓ | 출발지 좌표 |
+| origin.latitude | number | ✓ | 위도, -90 이상 90 이하 |
+| origin.longitude | number | ✓ | 경도, -180 이상 180 이하 |
+| destination | object | ✓ | 도착지 좌표 |
+| destination.latitude | number | ✓ | 위도, -90 이상 90 이하 |
+| destination.longitude | number | ✓ | 경도, -180 이상 180 이하 |
+
+```json
+{
+  "origin": {
+    "latitude": 37.5665,
+    "longitude": 126.9780
+  },
+  "destination": {
+    "latitude": 37.4979,
+    "longitude": 127.0276
+  }
+}
+```
+
+**응답**: `200 OK`
+
+| 필드 | 타입 | 설명 |
+|---|---|---|
+| durationSeconds | number | 이동시간(초) |
+| distanceMeters | number | 이동거리(m) |
+| durationText | string | 앱 표시용 이동시간 |
+| distanceText | string | 앱 표시용 이동거리 |
+
+```json
+{
+  "durationSeconds": 1840,
+  "distanceMeters": 12300,
+  "durationText": "31분",
+  "distanceText": "12.3km"
+}
+```
+
+**주요 에러**
+
+| 상태 | 설명 |
+|---|---|
+| 400 Bad Request | 좌표 누락 또는 범위 오류 |
+| 401 Unauthorized | 로그인 세션 없음 |
+| 500 Internal Server Error | `GOOGLE_MAPS_API_KEY` 미설정 |
+| 502 Bad Gateway | Google Routes API에서 경로 계산 실패 또는 잘못된 응답 반환 |
 
 ---
 
