@@ -5,6 +5,7 @@ import com.warmingup.backend.auth.dto.LoginRequest;
 import com.warmingup.backend.auth.dto.UserResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -28,8 +29,9 @@ public class AuthController {
 
     @PostMapping("/login")
     @Operation(summary = "로그인")
-    public UserResponse login(@RequestBody @Valid LoginRequest request, HttpSession session) {
+    public UserResponse login(@RequestBody @Valid LoginRequest request, HttpServletRequest servletRequest) {
         UserResponse response = authService.login(request);
+        HttpSession session = servletRequest.getSession(true);
         session.setAttribute(SessionConst.LOGIN_USER, response.id());
         return response;
     }
@@ -37,7 +39,10 @@ public class AuthController {
     @PostMapping("/logout")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "로그아웃")
-    public void logout(HttpSession session) {
-        session.invalidate();
+    public void logout(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
     }
 }

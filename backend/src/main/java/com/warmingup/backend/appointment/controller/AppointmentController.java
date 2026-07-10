@@ -3,10 +3,10 @@ package com.warmingup.backend.appointment.controller;
 import com.warmingup.backend.appointment.dto.AppointmentCreateRequest;
 import com.warmingup.backend.appointment.dto.AppointmentResponse;
 import com.warmingup.backend.appointment.service.AppointmentService;
-import com.warmingup.backend.auth.SessionConst;
+import com.warmingup.backend.auth.AuthSession;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/api/appointments")
@@ -27,18 +26,22 @@ import org.springframework.web.server.ResponseStatusException;
 public class AppointmentController {
 
     private final AppointmentService appointmentService;
+    private final AuthSession authSession;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "약속 생성")
-    public AppointmentResponse create(@RequestBody @Valid AppointmentCreateRequest request, HttpSession session) {
-        return appointmentService.createAppointment(getLoginUserId(session), request);
+    public AppointmentResponse create(
+            @RequestBody @Valid AppointmentCreateRequest request,
+            HttpServletRequest servletRequest
+    ) {
+        return appointmentService.createAppointment(authSession.getLoginUserId(servletRequest), request);
     }
 
     @GetMapping("/{appointmentId}")
     @Operation(summary = "약속 단건 조회")
-    public AppointmentResponse getAppointment(@PathVariable Long appointmentId, HttpSession session) {
-        return appointmentService.getAppointment(getLoginUserId(session), appointmentId);
+    public AppointmentResponse getAppointment(@PathVariable Long appointmentId, HttpServletRequest request) {
+        return appointmentService.getAppointment(authSession.getLoginUserId(request), appointmentId);
     }
 
     @PatchMapping("/{appointmentId}/items/{itemId}/complete")
@@ -47,16 +50,8 @@ public class AppointmentController {
     public void completeItem(
             @PathVariable Long appointmentId,
             @PathVariable Long itemId,
-            HttpSession session
+            HttpServletRequest request
     ) {
-        appointmentService.completeItem(getLoginUserId(session), appointmentId, itemId);
-    }
-
-    private Long getLoginUserId(HttpSession session) {
-        Long userId = (Long) session.getAttribute(SessionConst.LOGIN_USER);
-        if (userId == null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
-        }
-        return userId;
+        appointmentService.completeItem(authSession.getLoginUserId(request), appointmentId, itemId);
     }
 }
